@@ -42,24 +42,11 @@
                     {{#PitchPosition}}
                     <span id="pitch-tags" class="tags"> {{PitchPosition}} </span>
                     {{/PitchPosition}}
-                    <br />
-                    <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
                 </div>
-            </div>
-
-            <!-- Image -->
-            <div class="dh-right">
-                {{#Picture}}
-                <div class="image tappable {{Tags}}">{{Picture}}</div>
-                {{/Picture}}
             </div>
         </div>
 
         <br>
-        <div class="sentence">
-            {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
-            {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
-        </div>
 
         <!-- The entire definition blockquote -->
         <div class="def-info-container">
@@ -80,11 +67,28 @@
             </div>
         </blockquote>
 
+        <!-- Image (MODIFIED)-->
+        {{#Picture}}
+        <div style="margin: 0 auto; max-width: 400px; position: relative; font-size: 0;">
+            <div class="image tappable {{Tags}}">{{Picture}}</div>
+        </div>
+        {{/Picture}}
+
+        <!-- Sentence Moved (MODIFIED)-->
+        <div class="sentence">
+            {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
+            {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+        </div>
+
         <!-- This is for the sentence that you see on mobile (positioned under definition), on Desktop, the sentence goes above the definition box, and this is hidden -->
         <div class="sentence-mobile">
             {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
             {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
         </div>
+
+        <!-- Audio Buttons Moved (MODIFIED)-->
+        <br />
+        <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
 
         <!------- Image modal --------->
         <div class="modal-bg tappable"></div>

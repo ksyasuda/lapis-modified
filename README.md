@@ -1,4 +1,27 @@
-# Lapis
+# Lapis-Modified
+
+Fork of Lapis intended for modifications that align it with my personal preferences and the original, very thoughtful animecards design. The idea is that the information of the card splits into two categories:
+
+- Essential: Word, Reading, Meaning
+- Non-essential: Picture, Sentence, Audio
+
+When reviewing and passing the card we only pay attention to the essential information. When lapsing a card we use the non-essential information to remind ourselves. This lets us review cards very fast while keeping review quality high.
+
+Therefore the following changes are made:
+
+- The image no longer appears next to the word, also left-shfiting it -> It's non-essential information and should be lower on the card.
+- The definiton has been moved below the word and reading -> It's essential information and should be higher on the card.
+- Moved the audio buttons below the sentence.
+
+I will try my best to keep this fork up to date with the original Lapis and not to break any features. If the maintainers of Lapis think these are good ideas, it might be worth building them into the original deck as optional settings.
+
+![Lapis Modified](assets/lapis_modified.png)
+
+---
+
+**Original Lapis Docks below. Please use them as a reference for setting up the deck in Yomitan and as reference for other deck features.**
+
+## Lapis
 
 An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtfully designed to be fast, feature-rich, and compatible.
 
