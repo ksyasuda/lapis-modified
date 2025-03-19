@@ -40,7 +40,7 @@
     --mobile-info-font-size: 16px;
 
     /* Miscellaneous */
-    --font-serif: "Georgia", "Liberation Serif", "Times New Roman", "Hiragino Mincho ProN", "Noto Serif CJK JP", "MS Mincho", HanaMinA, HanaMinB, serif;
+    --font-serif: "Georgia", "Liberation Serif", "Times New Roman", "Hiragino Mincho ProN", "Noto Serif CJK JP", "Yu Mincho", HanaMinA, HanaMinB, serif;
     --font-sans: "SF Pro Display", "Liberation Sans", "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", "Meiryo", HanaMinA, HanaMinB, sans-serif;
     --light-mode-image-brightness: 85%;
     --dark-mode-image-brightness: 80%;
@@ -245,7 +245,7 @@ header {
     padding: 0;
 }
 
-.freq-list-container.visible {
+.freq-dropdown:hover .freq-list-container {
     display: block;
 }
 
@@ -715,17 +715,17 @@ summary {
 }
 
 /* Format Definitions */
-#primary ul[data-sc-content="glossary"]>li:not(:first-child)::before {
+ul[data-sc-content="glossary"]>li:not(:first-child)::before {
     white-space: pre-wrap;
     content: " | ";
     display: inline;
 }
 
-#primary ul[data-sc-content="glossary"]>li {
+ul[data-sc-content="glossary"]>li {
     display: inline;
 }
 
-#primary ul[data-sc-content="glossary"] {
+ul[data-sc-content="glossary"] {
     display: inline;
     list-style: none;
     padding-left: 0;

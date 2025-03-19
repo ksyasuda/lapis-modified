@@ -4,7 +4,7 @@
         <!-- Show the frequency number -->
         {{FreqSort}}
 
-        <!-- The frequency dropdown icon -->
+        <!-- The frequency list -->
         {{#Frequency}}
         <span class="freq-dropdown">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" class="dropdown-arrow-svg"
@@ -12,11 +12,9 @@
                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
                 <path d="M 12.7,6.5 H 3.3 L 8,11 Z"></path>
             </svg>
+            <div class="freq-list-container">{{Frequency}}</div>
         </span>
         {{/Frequency}}
-
-        <!-- The frequency list -->
-        <div class="freq-list-container"></div>
     </div>
 </header>
 
@@ -54,7 +52,7 @@
         </div>
         <blockquote class="main-def def-blockquote">
             {{#DefinitionPicture}}
-            <div class="def-image">{{DefinitionPicture}}</div>
+            <div class="def-image tappable">{{DefinitionPicture}}</div>
             {{/DefinitionPicture}}
             <div class="definition">
                 {{#SelectionText}}
@@ -91,8 +89,9 @@
         <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
 
         <!------- Image modal --------->
-        <div class="modal-bg tappable"></div>
-        <div class="img-popup"></div>
+        <div class="modal-bg tappable">
+            <div class="img-popup"></div>
+        </div>
 
         {{#MiscInfo}}
         <div style="text-align: center">
@@ -138,23 +137,16 @@
         return [...`{{PitchCategories}}`.matchAll(validTypes)].map(m => m[0]);
     }
 
-    function endsWithAny(suffixes, string) {
-        for (let suffix of suffixes) {
-            if (string.endsWith(suffix)) return true;
-        }
-        return false;
-    }
-
     function hasVerbOrAdjEnding() {
-        return endsWithAny(
-            ["い", "う", "く", "す", "つ", "ぶ", "む", "る"],
-            "{{Expression}}".replace("</div>", "")
-        );
+        const endings = ["い", "う", "く", "す", "つ", "ぶ", "む", "る"];
+        return endings.some(ending => `{{Expression}}`.replace("</div>","").endsWith(ending));
     }
 
     function getPitchType(pitchPosition) {
         const pitchCategories = getPitchCategories();
-        const canBeKifuku = pitchCategories.includes("kifuku");
+        const kifukuTags = ["adj-i", "v1", "v2", "v4", "v5", "vs-", "vz", "vk", "vn", "vr"];
+        let canBeKifuku = pitchCategories.includes("kifuku");
+        canBeKifuku ||= kifukuTags.some(tag => `{{PitchCategories}}`.includes(tag));
         if (canBeKifuku || (pitchCategories.length == 0 && hasVerbOrAdjEnding())) {
             return pitchPosition === 0 ? "heiban" : "kifuku";
         }
@@ -173,19 +165,19 @@
         const pitchPositions = `{{PitchPosition}}`.match(/^\d+|\d+\b|\d+(?=\w)/g);
         if (pitchPositions === null) return;
 
-        const pitchPosition = Number(pitchPositions[0]);
+        const pitchType = getPitchType(Number(pitchPositions[0]));
         const sentences = Array.from(
             document.querySelectorAll(".sentence, .definition, .sentence-mobile"),
         );
         for (const sentence of sentences) {
             for (const targetWord of sentence.getElementsByTagName("b")) {
-                targetWord.classList.add(getPitchType(pitchPosition));
+                targetWord.classList.add(pitchType);
             }
         }
 
         const vocabElement = document.querySelector(".vocab");
         if (vocabElement !== null) {
-            vocabElement.classList.add(getPitchType(pitchPosition));
+            vocabElement.classList.add(pitchType);
         }
     }
 
@@ -342,6 +334,7 @@
     // Returns the dictionary content, without the dictionary name.
     function getDictionaryContent(dictionarySelector) {
         const dictionary = document.querySelector(dictionarySelector);
+        if (!dictionary) return null;
         const contentInSpan = dictionary.querySelector(":scope > span");
         if (contentInSpan) return contentInSpan;
 
@@ -369,6 +362,7 @@
             // Compare content otherwise
             const primaryDict = getDictionaryContent("#primary > div");
             const glossariesDict = getDictionaryContent("#glossaries > div");
+            if (!primaryDict || !glossariesDict ) return false;
             return primaryDict.innerHTML.trim() === glossariesDict.innerHTML.trim();
         }
 
@@ -503,22 +497,17 @@
         });
     }
 
-    // Handles what you see when you hover over frequency dropdown icon
-    function frequencyHover() {
-        const hoverTrigger = document.querySelector('.freq-dropdown');
-        const frequencyElement = document.querySelector('.freq-list-container');
-        if (hoverTrigger === null) return;
+    // Format plaintext frequencies into a list
+    function formatFrequencyList() {
+        const frequency = document.querySelector('.freq-list-container');
+        if (!frequency) return;
+        const frequencyList = frequency.querySelector('ul');
+        // Already a list; nothing to do
+        if (frequencyList) return;
 
-        hoverTrigger.addEventListener('mouseenter', function () {
-            frequencyElement.innerHTML = `
-              {{#Frequency}} {{Frequency}} {{/Frequency}}
-          `;
-            frequencyElement.classList.add('visible');
-        });
-
-        hoverTrigger.addEventListener('mouseleave', function () {
-            frequencyElement.classList.remove('visible');
-        });
+        const freqs = frequency.innerText.split(',');
+        const freqHtml = `<ul>${freqs.map(freq => `<li>${freq.trim()}</li>`).join('')}</ul>`
+        frequency.innerHTML = freqHtml;
     }
 
     // Sets the height of dhLeft, dhRight, defHeader as a whole
@@ -537,13 +526,14 @@
     // Hides the dictionaries user selected in MainDefinition in Glossary field, if any
     function hideCorrectDefinition() {
         // Do nothing if css rule already exists
-        if (document.querySelector("blockquote.main-def style")) return;
+        if (document.querySelector("style#hide-main-def")) return;
 
         let primaryDicts = document.querySelectorAll("#primary li[data-dictionary]");
         if (primaryDicts.length === 0) return;
 
         let style = document.createElement('style');
         style.type = 'text/css';
+        style.id = "hide-main-def";
 
         const cssSelector = Array.from(primaryDicts).map((dict) =>
             `#glossaries li[data-dictionary="${dict.getAttribute("data-dictionary")}"]`
@@ -571,7 +561,7 @@
         constructPitch();
         setUpDefToggle();
         clickImages();
-        frequencyHover();
+        formatFrequencyList();
         setDHHeight();
         hideCorrectDefinition();
         movePrimaryDicts();
