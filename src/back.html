@@ -62,12 +62,17 @@
                 <div id="primary" data-display-name="Primary Definition">{{MainDefinition}}</div>
                 {{/MainDefinition}}
                 <div id="glossaries" data-display-name="Glossaries">{{Glossary}}</div>
+                <!-- New definition for WaniAnki -->
+                <div id="wanianki" data-display-name="WaniAnki">
+                  <span id="word" style="display: none;">{{Expression}}</span>
+                  <div id="kanjiInfo"></div>
+                </div>
             </div>
         </blockquote>
 
         <!-- Image (MODIFIED)-->
         {{#Picture}}
-        <div style="margin: 0 auto; max-width: 400px; position: relative; font-size: 0;">
+        <div class="image-container">
             <div class="image tappable {{Tags}}">{{Picture}}</div>
         </div>
         {{/Picture}}
@@ -395,24 +400,19 @@
 
     // Display definition corresponding to index
     function updateDefDisplay() {
-        const definitions = document.querySelectorAll(
-            ".main-def > .definition > div"
-        );
-
+        const definitions = document.querySelectorAll(".main-def > .definition > div");
         let n_defs = definitions.length;
         if (n_defs === 1) definitions[0].classList.remove("hidden");
         if (n_defs <= 1) return;
-
         let currentIndex = document.head.getAttribute("data-def-index");
         currentIndex = currentIndex % n_defs;
         while (currentIndex < 0) currentIndex += n_defs;
 
-        for (let idx = 0; idx < n_defs; idx++) {
-            definitions[idx].classList.add("hidden");
-        }
+        // Hide all definitions and then show the active one
+        definitions.forEach(def => def.classList.add("hidden"));
         definitions[currentIndex].classList.remove("hidden");
 
-        const defDisplayName = definitions[currentIndex].getAttribute("data-display-name")
+        const defDisplayName = definitions[currentIndex].getAttribute("data-display-name");
         const indexDisplay = document.querySelector(".def-info");
         indexDisplay.style.opacity = 1;
         indexDisplay.innerText = `${defDisplayName} ${currentIndex + 1}/${n_defs}`;
@@ -568,4 +568,9 @@
     }
 
     initialize();
+    var apiToken = "YOU CAN LEAVE THIS AS IT IS OR ADD YOUR WANIKANI API KEY";
+    var kanji = document.getElementById("word").textContent;
 </script>
+<script type="text/javascript" src="https://damiansh.github.io/js/jquery.min.js"></script>
+<script src="https://damiansh.github.io/waniAnki/waniAnki.js"></script>
+<link rel="stylesheet" href="https://damiansh.github.io/waniAnki/waniAnki.css">

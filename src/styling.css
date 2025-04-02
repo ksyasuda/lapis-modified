@@ -1,23 +1,23 @@
 :root {
     /* Color theme */
-    --light-mode-bg-color: #fffaf0;
-    --light-mode-fg-color: #333333;
+    --light-mode-bg-color: #363a4f;
+    --light-mode-fg-color: #cad3f5;
 
     /* Pitch colors */
-    --dark-mode-heiban: #39bae6;
-    --dark-mode-atamadaka: #ec464f;
-    --dark-mode-nakadaka: #ff8f40;
-    --dark-mode-odaka: #6cbf43;
-    --dark-mode-kifuku: #af85f4;
-    --light-mode-heiban: #1aa0ce;
-    --light-mode-atamadaka: #e92a35;
-    --light-mode-nakadaka: #ff6b03;
-    --light-mode-odaka: #61ad3b;
-    --light-mode-kifuku: #7e53c4;
+    --dark-mode-heiban: #91d7e3;
+    --dark-mode-atamadaka: #ee99a0;
+    --dark-mode-nakadaka: #f5a97f;
+    --dark-mode-odaka: #a6da95;
+    --dark-mode-kifuku: #c6a0f6;
+    --light-mode-heiban: #8aadf4;
+    --light-mode-atamadaka: #ed8796;
+    --light-mode-nakadaka: #fe640b;
+    --light-mode-odaka: #8bd5ca;
+    --light-mode-kifuku: #f5bde6;
 
     /* Bold color */
-    --light-mode-bold: #999999;
-    --dark-mode-bold: #7d8590;
+    --light-mode-bold: #c6a0f6;
+    --dark-mode-bold: #c6a0f6;
 
     /* PC Font sizes */
     --pc-main-font-size: 16px;
@@ -40,12 +40,16 @@
     --mobile-info-font-size: 16px;
 
     /* Miscellaneous */
-    --font-serif: "Georgia", "Liberation Serif", "Times New Roman", "Hiragino Mincho ProN", "Noto Serif CJK JP", "Yu Mincho", HanaMinA, HanaMinB, serif;
-    --font-sans: "SF Pro Display", "Liberation Sans", "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", "Meiryo", HanaMinA, HanaMinB, sans-serif;
+    --font-serif:
+        'Noto Serif CJK JP', 'Georgia', 'Liberation Serif', 'Times New Roman',
+        'Hiragino Mincho ProN', 'Yu Mincho', HanaMinA, HanaMinB, serif;
+    --font-sans:
+        'Noto Sans CJK JP', 'SF Pro Display', 'Liberation Sans', 'Segoe UI',
+        'Hiragino Kaku Gothic ProN', 'Meiryo', HanaMinA, HanaMinB, sans-serif;
     --light-mode-image-brightness: 85%;
     --dark-mode-image-brightness: 80%;
-    --light-mode-tooltip-hover-color: rgb(256, 256, 256, 0.9);
-    --dark-mode-tooltip-hover-color: rgba(0, 0, 0, 0.9);
+    --light-mode-tooltip-hover-color: rgb(110, 115, 141, 0.9);
+    --dark-mode-tooltip-hover-color: rgba(110, 115, 141, 0.9);
     --def-picture-size: 200px;
     --max-width: 800px;
 
@@ -58,35 +62,35 @@
 }
 
 .card.nightMode {
-    --bg-color: var(--canvas, #2c2c2c);
-    --fg-color: var(--fg, #fcfcfc);
+    --bg-color: #24273a;
+    --fg-color: #cad3f5;
     --heiban: var(--dark-mode-heiban, initial);
     --atamadaka: var(--dark-mode-atamadaka, initial);
     --nakadaka: var(--dark-mode-nakadaka, initial);
     --odaka: var(--dark-mode-odaka, initial);
     --kifuku: var(--dark-mode-kifuku, initial);
 
-    --bg-elevated: rgba(0, 0, 0, 0.12);
-    --bg-inset: rgba(255, 255, 255, 0.03);
-    --fg-subtle: rgba(255, 255, 255, 0.3);
-    --bold: var(--dark-mode-bold, #7d8590);
+    --bg-elevated: rgba(91, 96, 120, 0.12);
+    --bg-inset: rgb(184, 192, 224);
+    --fg-subtle: rgb(184, 192, 224);
+    --bold: var(--dark-mode-bold, #c6a0f6);
 
     --image-brightness: var(--dark-mode-image-brightness);
     --tooltip-hover-color: var(--dark-mode-tooltip-hover-color);
 }
 
 .android .nightMode {
-    --bg-color: black;
-    --fg-color: white;
+    --bg-color: #24273a;
+    --fg-color: #cad3f5;
 }
 
 .android .nightMode:not(.ankidroid_dark_mode) {
     /* make it brighter since bg is black */
-    --bg-elevated: rgba(255, 255, 255, 0.06);
+    --bg-elevated: rgba(91, 96, 120, 0.12);
 }
 
 .android .nightMode.ankidroid_dark_mode {
-    --bg-color: #303030;
+    --bg-color: #24273a;
 }
 
 .card:not(.nightMode) {
@@ -98,10 +102,10 @@
     --odaka: var(--light-mode-odaka, initial);
     --kifuku: var(--light-mode-kifuku, initial);
 
-    --bg-elevated: rgba(0, 0, 0, 0.03);
+    --bg-elevated: rgba(188, 192, 204);
     --bg-inset: rgba(0, 0, 0, 0.06);
     --fg-subtle: rgba(0, 0, 0, 0.6);
-    --bold: var(--light-mode-bold, #999999);
+    --bold: var(--light-mode-bold, #c6a0f6);
 
     --image-brightness: var(--light-mode-image-brightness);
     --tooltip-hover-color: var(--light-mode-tooltip-hover-color);
@@ -139,21 +143,6 @@ html.mobile {
     font-family: var(--font-serif);
     font-size: var(--main-font-size);
     text-align: center;
-}
-
-/* ------- Mobile css ------- */
-@media (max-width: 512px) {
-    .images-container {
-        justify-content: space-around;
-        flex-direction: row !important;
-        max-width: 100% !important;
-        width: 100%;
-        flex-wrap: wrap;
-    }
-
-    .images-container img {
-        width: 44%;
-    }
 }
 
 /* ----- Front elements ----- */
@@ -290,8 +279,8 @@ header {
 }
 
 .mobile .nightMode #pitch-tags {
-    color: #000 !important;
-    background-color: #fff;
+    color: #11111b !important;
+    background-color: #f5e0dc;
 }
 
 /* When multiple pitch */
@@ -308,16 +297,16 @@ header {
     display: inline;
 }
 
-.pitch ul>li:not(:last-child)::after,
-#pitch-tags ul>li:not(:last-child)::after {
-    content: "・";
+.pitch ul > li:not(:last-child)::after,
+#pitch-tags ul > li:not(:last-child)::after {
+    content: '・';
 }
 
-.pitch ul>li:not(:last-child)::after {
+.pitch ul > li:not(:last-child)::after {
     color: var(--fg-color);
 }
 
-#pitch-tags ul>li:not(:last-child)::after {
+#pitch-tags ul > li:not(:last-child)::after {
     color: var(--bg-color);
 }
 
@@ -380,7 +369,10 @@ header {
 /* Primary Image */
 .image img {
     max-height: 400px;
+    max-width: 600px;
     width: auto;
+    display: block;
+    margin: 0 auto;
     border-radius: 5px;
     cursor: pointer;
     transition: filter 0.3s;
@@ -389,6 +381,21 @@ header {
 .image img:hover,
 .def-image img:hover {
     filter: brightness(var(--image-brightness));
+}
+
+/* ------- Mobile css ------- */
+@media (max-width: 512px) {
+    .image-container {
+        justify-content: space-around;
+        flex-direction: row !important;
+        max-width: 420px !important;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .image-container img {
+        width: 88%;
+    }
 }
 
 /* Definition Image(s) */
@@ -587,7 +594,7 @@ footer {
 /* ----- Misc ----- */
 
 /* Furigana */
-.show-furigana>ruby rt {
+.show-furigana > ruby rt {
     visibility: visible;
 }
 
@@ -606,7 +613,7 @@ b {
     font-weight: 600;
 }
 
-b>ruby rt {
+b > ruby rt {
     opacity: 1;
 }
 
@@ -635,7 +642,7 @@ summary {
     position: relative;
 }
 
-.pitch-high>.pitch-line {
+.pitch-high > .pitch-line {
     display: block;
     position: absolute;
     top: -0.1em;
@@ -652,7 +659,7 @@ summary {
     margin-right: 0.1em;
 }
 
-.pitch-to-drop>.pitch-line {
+.pitch-to-drop > .pitch-line {
     display: block;
     position: absolute;
     top: -0.1em;
@@ -715,27 +722,27 @@ summary {
 }
 
 /* Format Definitions */
-ul[data-sc-content="glossary"]>li:not(:first-child)::before {
+#primary ul[data-sc-content='glossary'] > li:not(:first-child)::before {
     white-space: pre-wrap;
-    content: " | ";
+    content: ' | ';
     display: inline;
 }
 
-ul[data-sc-content="glossary"]>li {
+#primary ul[data-sc-content='glossary'] > li {
     display: inline;
 }
 
-ul[data-sc-content="glossary"] {
+#primary ul[data-sc-content='glossary'] {
     display: inline;
     list-style: none;
     padding-left: 0;
 }
 
 /* reduce indentations of Jitendex for mobile */
-.mobile li[data-dictionary^="Jitendex"] ul,
-.mobile li[data-dictionary^="Jitendex"] ol,
-.mobile li[data-details^="Jitendex"] ul,
-.mobile li[data-details^="Jitendex"] ol {
+.mobile li[data-dictionary^='Jitendex'] ul,
+.mobile li[data-dictionary^='Jitendex'] ol,
+.mobile li[data-details^='Jitendex'] ul,
+.mobile li[data-details^='Jitendex'] ol {
     padding-left: 0.3em;
 }
 
@@ -744,7 +751,7 @@ ul[data-sc-content="glossary"] {
     font-style: normal;
 }
 
-li[data-dictionary^="JMdict"] i {
+li[data-dictionary^='JMdict'] i {
     font-style: italic;
 }
 
@@ -753,7 +760,7 @@ li[data-dictionary^="JMdict"] i {
 }
 
 .definition .hidden {
-    display: none
+    display: none;
 }
 
 /* Prevent wrapping in the middle of a Jitendex tags */
@@ -763,43 +770,69 @@ span[data-sc-code] {
 
 /* backwards compatibility code for JPMN definitions */
 
-li[data-details="JMdict (English)"] .dict-group__glossary>ul,
-li[data-details="JMdict (English)"] .dict-group__glossary ul[data-sc-content="glossary"],
-li[data-details="JMdict"] .dict-group__glossary>ul,
-li[data-details="JMdict"] .dict-group__glossary ul[data-sc-content="glossary"],
-li[data-details="JMdict Extra"] .dict-group__glossary>ul,
-li[data-details="JMdict Extra"] .dict-group__glossary ul[data-sc-content="glossary"] {
+li[data-details='JMdict (English)'] .dict-group__glossary > ul,
+li[data-details='JMdict (English)']
+    .dict-group__glossary
+    ul[data-sc-content='glossary'],
+li[data-details='JMdict'] .dict-group__glossary > ul,
+li[data-details='JMdict'] .dict-group__glossary ul[data-sc-content='glossary'],
+li[data-details='JMdict Extra'] .dict-group__glossary > ul,
+li[data-details='JMdict Extra'] .dict-group__glossary ul[data-sc-content='glossary'] {
     display: inline;
     padding-left: 0em;
 }
 
-li[data-details="JMdict (English)"] .dict-group__glossary>ul>li,
-li[data-details="JMdict (English)"] .dict-group__glossary ul[data-sc-content="glossary"]>li,
-li[data-details="JMdict"] .dict-group__glossary>ul>li,
-li[data-details="JMdict"] .dict-group__glossary ul[data-sc-content="glossary"]>li,
-li[data-details="JMdict Extra"] .dict-group__glossary>ul>li,
-li[data-details="JMdict Extra"] .dict-group__glossary ul[data-sc-content="glossary"]>li {
+li[data-details='JMdict (English)'] .dict-group__glossary > ul > li,
+li[data-details='JMdict (English)']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li,
+li[data-details='JMdict'] .dict-group__glossary > ul > li,
+li[data-details='JMdict'] .dict-group__glossary ul[data-sc-content='glossary'] > li,
+li[data-details='JMdict Extra'] .dict-group__glossary > ul > li,
+li[data-details='JMdict Extra']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li {
     display: inline;
     padding-right: 0em;
     margin-right: 0em;
 }
 
-li[data-details="JMdict (English)"] .dict-group__glossary>ul>li::after,
-li[data-details="JMdict (English)"] .dict-group__glossary ul[data-sc-content="glossary"]>li::after,
-li[data-details="JMdict"] .dict-group__glossary>ul>li::after,
-li[data-details="JMdict"] .dict-group__glossary ul[data-sc-content="glossary"]>li::after,
-li[data-details="JMdict Extra"] .dict-group__glossary>ul>li::after,
-li[data-details="JMdict Extra"] .dict-group__glossary ul[data-sc-content="glossary"]>li::after {
-    content: " | ";
+li[data-details='JMdict (English)'] .dict-group__glossary > ul > li::after,
+li[data-details='JMdict (English)']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li::after,
+li[data-details='JMdict'] .dict-group__glossary > ul > li::after,
+li[data-details='JMdict']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li::after,
+li[data-details='JMdict Extra'] .dict-group__glossary > ul > li::after,
+li[data-details='JMdict Extra']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li::after {
+    content: ' | ';
     white-space: pre-wrap;
 }
 
-li[data-details="JMdict (English)"] .dict-group__glossary>ul>li:last-of-type:after,
-li[data-details="JMdict (English)"] .dict-group__glossary ul[data-sc-content="glossary"]>li:last-of-type:after,
-li[data-details="JMdict"] .dict-group__glossary>ul>li:last-of-type:after,
-li[data-details="JMdict"] .dict-group__glossary ul[data-sc-content="glossary"]>li:last-of-type:after,
-li[data-details="JMdict Extra"] .dict-group__glossary>ul>li:last-of-type:after,
-li[data-details="JMdict Extra"] .dict-group__glossary ul[data-sc-content="glossary"]>li:last-of-type:after {
+li[data-details='JMdict (English)'] .dict-group__glossary > ul > li:last-of-type:after,
+li[data-details='JMdict (English)']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li:last-of-type:after,
+li[data-details='JMdict'] .dict-group__glossary > ul > li:last-of-type:after,
+li[data-details='JMdict']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li:last-of-type:after,
+li[data-details='JMdict Extra'] .dict-group__glossary > ul > li:last-of-type:after,
+li[data-details='JMdict Extra']
+    .dict-group__glossary
+    ul[data-sc-content='glossary']
+    > li:last-of-type:after {
     display: none;
 }
 
@@ -807,26 +840,30 @@ li[data-details="JMdict Extra"] .dict-group__glossary ul[data-sc-content="glossa
  * customization for specific dictionaries
  */
 /* Makes JMdict italic */
-ol li[data-details="JMdict (English)"] .dict-group__tag-list,
-ol li[data-details="JMdict"] .dict-group__tag-list,
-ol li[data-details="JMdict Extra"] .dict-group__tag-list {
+ol li[data-details='JMdict (English)'] .dict-group__tag-list,
+ol li[data-details='JMdict'] .dict-group__tag-list,
+ol li[data-details='JMdict Extra'] .dict-group__tag-list {
     font-style: italic;
 }
 
 /* removes the dictionary entry for jmdict */
-ol li[data-details="JMdict (English)"] .dict-group__tag-list .dict-group__tag--dict,
-ol li[data-details="JMdict"] .dict-group__tag-list .dict-group__tag--dict,
-ol li[data-details="JMdict Extra"] .dict-group__tag-list .dict-group__tag--dict {
+ol li[data-details='JMdict (English)'] .dict-group__tag-list .dict-group__tag--dict,
+ol li[data-details='JMdict'] .dict-group__tag-list .dict-group__tag--dict,
+ol li[data-details='JMdict Extra'] .dict-group__tag-list .dict-group__tag--dict {
     display: none;
 }
 
 /* Makes Nico/Pixiv italic */
-ol li[data-details="Nico/Pixiv"] .dict-group__tag-list {
+ol li[data-details='Nico/Pixiv'] .dict-group__tag-list {
     font-style: italic;
 }
 
 /* Removes the extra text for the collapsed 新和英 display */
-ol li[data-details="新和英"] details.glossary-text__details .glossary-text__summary .dict-group__glossary--first-line {
+ol
+    li[data-details='新和英']
+    details.glossary-text__details
+    .glossary-text__summary
+    .dict-group__glossary--first-line {
     display: none;
 }
 
@@ -836,15 +873,15 @@ ol li[data-details="新和英"] details.glossary-text__details .glossary-text__s
  * --------------------
  */
 .dict-group__tag-list .dict-group__tag:not(:first-child)::before {
-    content: ", ";
+    content: ', ';
 }
 
 .dict-group__tag-list::before {
-    content: "(";
+    content: '(';
 }
 
 .dict-group__tag-list::after {
-    content: ") ";
+    content: ') ';
 }
 
 /* Show definition furigana */
@@ -854,7 +891,7 @@ ol li[data-details="新和英"] details.glossary-text__details .glossary-text__s
 
 /* Lessen def-blockquote padding */
 .def-blockquote {
-    padding-block: .5em;
+    padding-block: 0.5em;
 }
 .def-blockquote ol {
     margin-block: 0em;
@@ -867,6 +904,6 @@ ol li[data-details="新和英"] details.glossary-text__details .glossary-text__s
 /* Removes list numbering when only one list element  */
 .definition ol:has(> li[data-dictionary]:only-of-type),
 .definition ol:has(> li[data-details]:only-of-type) {
-    list-style-type : none;
+    list-style-type: none;
     padding-inline-start: 0;
 }

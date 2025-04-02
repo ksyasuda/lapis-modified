@@ -9,18 +9,33 @@
 
     <!------- Sentence card --------->
     {{#IsSentenceCard}}
+    <!-- Sentence Moved (MODIFIED)-->
     <div lang="ja" class="front-sentence">
-        {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-        {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+        {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
+        {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
     </div>
+
+    <!-- This is for the sentence that you see on mobile (positioned under definition), on Desktop, the sentence goes above the definition box, and this is hidden -->
+    <div lang="ja" class="sentence-mobile">
+        {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
+        {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+    </div>
+    <!-- Image (MODIFIED)-->
+    {{#Picture}}
+    <div class="image-container">
+        <div class="image tappable {{Tags}}">{{Picture}}</div>
+    </div>
+    {{/Picture}}
+    <br />
+    <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
     {{/IsSentenceCard}}
 
     <!--------- Hint card ----------->
     {{#IsWordAndSentenceCard}}
     <div lang="ja" class="front-vocab">{{Expression}}</div>
     <div id="hint">
-        {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-        {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+        {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
+        {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
     </div>
     {{/IsWordAndSentenceCard}}
 
@@ -62,7 +77,7 @@
         // Implement the clicking mechanism
         clickElement.addEventListener('click', (e) => toggleContent());
         document.addEventListener('keydown', (e) => {
-            if (event.key === 'c' | event.key === 'C') toggleContent();
+            if ((event.key === 'c') | (event.key === 'C')) toggleContent();
         });
     }
 
