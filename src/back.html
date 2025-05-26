@@ -650,9 +650,13 @@
         const translationResult = document.getElementById('translation-result');
         // Always get the current card's expression
         const inputText = document.querySelector('.vocab').textContent.trim();
-        
+
         // Show we're working on it
-        translationResult.innerHTML = `Translating: ${inputText}...`;
+        translationResult.innerHTML = `
+            <div class="translation-loading">
+                Translating: ${inputText}...
+                <div class="loading-spinner"></div>
+            </div>`;
 
         try {
             const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -688,7 +692,11 @@ Format your response in markdown with clear sections.`
 
             const data = await response.json();
             const translation = data.choices[0].message.content;
-            
+
+            if (!translation || translation.trim() === '') {
+                throw new Error('Empty translation received');
+            }
+
             // Convert markdown to HTML and preserve line breaks
             const formattedTranslation = translation
                 .replace(/\n/g, '<br>')
@@ -697,7 +705,11 @@ Format your response in markdown with clear sections.`
 
             translationResult.innerHTML = formattedTranslation;
         } catch (error) {
-            translationResult.innerHTML = `<div class="error">Error translating "${inputText}": ${error.message}</div>`;
+            translationResult.innerHTML = `
+                <div class="translation-error">
+                    <div class="error-message">Error translating "${inputText}": ${error.message}</div>
+                    <div class="retry-hint">Click to retry</div>
+                </div>`;
         }
     }
 
@@ -709,23 +721,3 @@ Format your response in markdown with clear sections.`
         }
     });
 </script>
-
-<style>
-    #translation-result {
-        padding: 1em;
-        line-height: 1.6;
-        font-size: 1em;
-    }
-
-    #translation-result .error {
-        color: #ff4444;
-    }
-
-    #translation-result strong {
-        font-weight: bold;
-    }
-
-    #translation-result em {
-        font-style: italic;
-    }
-</style>
