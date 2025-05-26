@@ -28,10 +28,10 @@
 <main lang="ja">
     <div class="template">
 
-        <!-- The first row (vocab box+picture) -->
+        <!-- The first row -->
         <div class="def-header">
             <div class="dh-left">
-                <div class="show-furigana vocab">
+                <div class="vocab">
                     {{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}
                     {{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}
                 </div>
@@ -47,8 +47,6 @@
                     {{#PitchPosition}}
                     <span id="pitch-tags" class="tags"> {{PitchPosition}} </span>
                     {{/PitchPosition}}
-                    <br />
-                    <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
                 </div>
             </div>
         </div>
@@ -76,6 +74,10 @@
                   <span id="word" style="display: none;">{{Expression}}</span>
                   <div id="kanjiInfo"></div>
                 </div>
+                <!-- AI Translation Section -->
+                <div id="ai-translation" data-display-name="AI Translation" class="hidden">
+                  <div id="translation-result">Click to translate: {{Expression}}</div>
+                </div>
             </div>
         </div>
 
@@ -97,6 +99,10 @@
             {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
             {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
         </div>
+
+		<!-- Audio Buttons Moved (MODIFIED)-->
+        <br />
+        <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
 
         <!------- Image modal --------->
         <div class="modal-bg tappable">
@@ -433,12 +439,12 @@
     // Display definition corresponding to index
     function updateDefDisplay() {
         const definitions = document.querySelectorAll('.main-def > .definition > div');
+        const indexDisplay = document.querySelector(".def-info");
 
         let n_defs = definitions.length;
-        if (n_defs === 1) definitions[0].classList.remove("hidden");
-        if (n_defs <= 1) return;
+        if (n_defs === 0) return;
 
-        let currentIndex = document.head.dataset.defIndex;
+        let currentIndex = Number(document.head.dataset.defIndex) || 0;
         currentIndex = currentIndex % n_defs;
         while (currentIndex < 0) currentIndex += n_defs;
 
@@ -448,9 +454,10 @@
         definitions[currentIndex].classList.remove('hidden');
 
         const defDisplayName = definitions[currentIndex].dataset.displayName;
-        const indexDisplay = document.querySelector(".def-info");
-        indexDisplay.style.opacity = 1;
-        indexDisplay.innerText = `${defDisplayName} ${currentIndex + 1}/${n_defs}`;
+        if (indexDisplay) {
+            indexDisplay.style.opacity = 1;
+            indexDisplay.innerText = `${defDisplayName} ${currentIndex + 1}/${n_defs}`;
+        }
     }
 
     function changeIndex(value) {
@@ -471,6 +478,13 @@
             .forEach((def) => {
                 def.classList.add('hidden');
             });
+
+        // Always show the first definition and update the display
+        if (definitions.length > 0) {
+            definitions[0].classList.remove('hidden');
+            updateDefDisplay();
+        }
+
         // no need for toggling on less than 2 definitions
         if (definitions.length < 2) return;
 
@@ -629,3 +643,89 @@
 <script type="text/javascript" src="https://damiansh.github.io/js/jquery.min.js"></script>
 <script src="https://damiansh.github.io/waniAnki/waniAnki.js"></script>
 <link rel="stylesheet" href="https://damiansh.github.io/waniAnki/waniAnki.css">
+
+<!-- AI Translation Script -->
+<script>
+    async function getAITranslation() {
+        const translationResult = document.getElementById('translation-result');
+        // Always get the current card's expression
+        const inputText = document.querySelector('.vocab').textContent.trim();
+        
+        // Show we're working on it
+        translationResult.innerHTML = `Translating: ${inputText}...`;
+
+        try {
+            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer YOUR_OPENROUTER_API_KEY',
+                    'HTTP-Referer': 'https://github.com/yourusername/your-repo',
+                    'X-Title': 'Japanese Learning App'
+                },
+                body: JSON.stringify({
+                    model: 'meta-llama/llama-4-maverick:free',
+                    messages: [{
+                        role: 'system',
+                        content: `You are a Japanese language expert. Your task is to:
+1. Translate the input text to English
+2. Break down the translation word by word
+3. Explain any grammar points
+4. Provide information about any kanji
+5. Add any additional context or nuances
+
+Format your response in markdown with clear sections.`
+                    }, {
+                        role: 'user',
+                        content: inputText
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const translation = data.choices[0].message.content;
+            
+            // Convert markdown to HTML and preserve line breaks
+            const formattedTranslation = translation
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            translationResult.innerHTML = formattedTranslation;
+        } catch (error) {
+            translationResult.innerHTML = `<div class="error">Error translating "${inputText}": ${error.message}</div>`;
+        }
+    }
+
+    // Add click handler for the AI Translation tab
+    document.addEventListener('click', function(e) {
+        // Check if the clicked element is the AI Translation tab
+        if (e.target.closest('#ai-translation')) {
+            getAITranslation();
+        }
+    });
+</script>
+
+<style>
+    #translation-result {
+        padding: 1em;
+        line-height: 1.6;
+        font-size: 1em;
+    }
+
+    #translation-result .error {
+        color: #ff4444;
+    }
+
+    #translation-result strong {
+        font-weight: bold;
+    }
+
+    #translation-result em {
+        font-style: italic;
+    }
+</style>
