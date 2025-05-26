@@ -445,11 +445,12 @@ main {
     text-align: right;
     margin-right: 1em;
     pointer-events: none;
-    visibility: hidden;
+    visibility: visible;
+    opacity: 1;
 }
 
 .mobile .def-info {
-    display: none;
+    display: block;
 }
 
 /* MainDefinition */
