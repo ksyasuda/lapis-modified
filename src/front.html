@@ -30,12 +30,12 @@
     <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
     {{/IsSentenceCard}}
 
-    <!--------- Hint card ----------->
+    <!--------- Word And Sentence card ----------->
     {{#IsWordAndSentenceCard}}
     <div lang="ja" class="front-vocab">{{Expression}}</div>
-    <div id="hint">
-        {{#SentenceFurigana}} {{furigana:SentenceFurigana}} {{/SentenceFurigana}}
-        {{^SentenceFurigana}} {{furigana:Sentence}} {{/SentenceFurigana}}
+    <div lang="ja" id="hint">
+        {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
+        {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
     </div>
     {{/IsWordAndSentenceCard}}
 
@@ -45,6 +45,17 @@
         <div lang="ja" class="front-vocab">{{Expression}}</div>
     </div>
     {{/IsClickCard}}
+
+    <!-------- Audio card ----------->
+    {{#IsAudioCard}}
+    <div id="audio">
+        <div lang="ja" class="front-sentence">{{Sentence}}</div>
+        <div>
+            {{#SentenceAudio}}{{SentenceAudio}}{{/SentenceAudio}}
+            {{^SentenceAudio}}{{ExpressionAudio}}{{/SentenceAudio}}
+        </div>
+    </div>
+    {{/IsAudioCard}}
 
     <!-- Hint -->
     {{#Hint}}
@@ -81,9 +92,15 @@
         });
     }
 
+    function HideTargetWord() {
+        const targetWords = document.querySelectorAll('#audio b');
+        targetWords.forEach((word) => (word.innerText = '[...]'));
+    }
+
     function initialize() {
         // Check what card type it is
         if (`{{IsClickCard}}`) ClickCard();
+        if (`{{IsAudioCard}}`) HideTargetWord();
     }
 
     initialize();
