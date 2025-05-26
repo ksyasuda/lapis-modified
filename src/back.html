@@ -713,11 +713,20 @@ Format your response in markdown with clear sections.`
         }
     }
 
-    // Add click handler for the AI Translation tab
+    // Add handlers for both click and touch events
     document.addEventListener('click', function(e) {
         // Check if the clicked element is the AI Translation tab
         if (e.target.closest('#ai-translation')) {
             getAITranslation();
         }
     });
+
+    // Add touch handler for mobile devices
+    document.addEventListener('touchend', function(e) {
+        // Check if the touched element is the AI Translation tab
+        if (e.target.closest('#ai-translation')) {
+            e.preventDefault(); // Prevent any default touch behavior
+            getAITranslation();
+        }
+    }, { passive: false });
 </script>
