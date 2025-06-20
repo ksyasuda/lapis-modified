@@ -27,7 +27,7 @@ An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtf
 
 <div align="center">
   <img src="https://github.com/donkuri/lapis/raw/main/assets/Lapis.gif" alt="Click cards with Lapis">
-  <p><em>Click cards with Lapis</em></p>
+  <p><em>Click cards with Lapis. You can click on the edges of the definition blockquote to traverse your dictionaries, hover over the sentence to show furigana, and hover over the top right to see frequency information.</em></p>
 </div>
 
 ### Table of Contents
@@ -44,6 +44,7 @@ An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtf
     - [How do I set up sentence furigana?](#how-do-i-set-up-sentence-furigana)
     - [How do I switch from JPMN to Lapis?](#how-do-i-switch-from-jpmn-to-lapis)
     - [How do I use the various card types?](#how-do-i-use-the-various-card-types)
+    - [How do I see all my definitions?](#how-do-i-see-all-my-definitions)
     - [What does `Hint` do?](#what-does-hint-do)
     - [Why three different fields for definitions?](#why-three-different-fields-for-definitions)
     - [Will this work with tools like JL?](#will-this-work-with-tools-like-jl)
@@ -54,6 +55,8 @@ An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtf
     - [How can I change the fonts used?](#how-can-i-change-the-fonts-used)
     - [How can I change the bold color?](#how-can-i-change-the-bold-color)
     - [How can I move the sentence on mobile?](#how-can-i-move-the-sentence-on-mobile)
+    - [How can I change the blur effect?](#how-can-i-change-the-blur-effect)
+    - [Why is the blur feature not working?](#why-is-the-blur-feature-not-working)
     - [I found a bug, where can I report it?](#i-found-a-bug-where-can-i-report-it)
     - [I have a question not covered in the FAQ](#i-have-a-question-not-covered-in-the-faq)
   - [Contributors](#contributors)
@@ -87,13 +90,14 @@ At the same time, another great notetype caught our eyes, [rudnam](https://githu
 To use Lapis, first download the example deck from [Releases](https://github.com/donkuri/lapis/releases). From there, you need to change your fields settings in Yomitan. Start by selecting `Lapis` as the `Model` in Yomitan's `Configure Anki Card Format`. Here is how your fields should be set up:
 
 | Field                 | Value                                                                                                                                                      |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Expression            | `{expression}`                                                                                                                                             |
 | ExpressionFurigana    | `{furigana-plain}`                                                                                                                                         |
 | ExpressionReading     | `{reading}`                                                                                                                                                |
 | ExpressionAudio       | `{audio}`                                                                                                                                                  |
 | SelectionText         | `{popup-selection-text}`                                                                                                                                   |
 | MainDefinition        | Something like `{single-glossary-jmdict/jitendex}`. Find this by clicking the down arrow next to this field, and finding a dictionary in a similar format. |
+| DefinitionPicture     | Here you can include any image you'd like to use to help *illustrate* the definition or the vocabulary term.                                               |
 | Sentence              | `{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}`                                                                                                          |
 | SentenceFurigana      |                                                                                                                                                            |
 | SentenceAudio         |                                                                                                                                                            |
@@ -103,6 +107,7 @@ To use Lapis, first download the example deck from [Releases](https://github.com
 | IsWordAndSentenceCard |                                                                                                                                                            |
 | IsClickCard           |                                                                                                                                                            |
 | IsSentenceCard        |                                                                                                                                                            |
+| IsAudioCard           |                                                                                                                                                            |
 | PitchPosition         | `{pitch-accent-positions}`                                                                                                                                 |
 | PitchCategories       | `{pitch-accent-categories}`                                                                                                                                |
 | Frequency             | `{frequencies}`                                                                                                                                            |
@@ -135,13 +140,20 @@ Please refer to [this](docs/updating_cards.md). We do not provide other updating
 
 ### How do I use the various card types?
 
-The `is...Card` fields let you select the kind of card you want to use by placing 'x' (or anything really) in one of the fields. Without anything, you get plain old vocab cards. Please only use one selector to avoid bugs. Here are all the possible options:
+The `Is...Card` fields let you select the kind of card you want to use by placing 'x' (or anything really) in one of the fields. Without anything, you get plain old vocab cards. Please only use one selector to avoid bugs. Here are all the possible options:
 
 | Field selected        | Effect                                                                |
 | --------------------- | --------------------------------------------------------------------- |
 | IsWordAndSentenceCard | Displays the `Sentence` field as a hint below the word on the front.  |
-| isClickCard           | Makes the word in the front of the card clickable to get the sentence |
-| isSentenceCard        | The full sentence appears in the front instead of only the word       |
+| IsClickCard           | Makes the word in the front of the card clickable to get the sentence |
+| IsSentenceCard        | The full sentence appears in the front instead of only the word       |
+| IsAudioCard           | Plays the sentence audio and shows the sentence with the word missing |
+
+When using audio cards, make sure to populate your sentence audio. It falls back to the word audio, however this will be inaccurate when it's conjugated.
+
+### How do I see all my definitions?
+
+To navigate through all of your definitions, you can click on the left and right edges of the definition box/blockquote. As demonstrated in the GIF at the start, the definitions, *provided your setup is correct*, will be organized into three distinct fields. You can learn more about this structural choice [here](#why-three-different-fields-for-definitions).
 
 ### What does `Hint` do?
 
@@ -167,8 +179,8 @@ You can read the full explanation [here](https://animecards.site/ankicards/#the-
 This is partly inspired by JPMN and its method of organizing dictionaries. There are three main fields:
 
 - `SelectionText` – Use this when you want to highlight a specific sentence or definition from the Yomitan popup. If you don’t need to highlight anything, just leave it empty, it won’t affect the notetype.
-- `MainDefinition` – This is where you input the main dictionary you prefer. I highly recommend filling this in. If you're new to Japanese or mining on your own, it’s a good idea to start with a bilingual dictionary like JMDict/Jitendex. Alternatively, you can use your preferred monolingual dictionaries (such as 三省堂, 大辞林, 大辞泉...) by selecting them when configuring Yomitan. **Please note, the dictionaries need to be installed in Yomitan before they can be selected.**
-- `Glossary` – This is where you place all of your dictionary definitions. We recommend having more than a single dictionary, see [here](https://donkuri.github.io/learn-japanese/setup/#adding-dictionaries). **If you choose to use only a single dictionary, make sure it is selected in `MainDefinition` and leave this field EMPTY to avoid a known bug.**
+- `MainDefinition` – This is where you input the main dictionary you prefer. I highly recommend filling this in. If you're new to Japanese or mining on your own, it’s a good idea to start with a bilingual dictionary like [JMDict](https://github.com/yomidevs/jmdict-yomitan). Alternatively, you can use your preferred monolingual dictionaries (such as 三省堂, 大辞林, 大辞泉...) by selecting them when configuring Yomitan. Lapis also supports having *multiple* dictionaries inside the field. **Please note, the dictionaries need to be installed in Yomitan before they can be selected.**
+- `Glossary` – This is where you place all of your dictionary definitions. We recommend having more than a single dictionary, see [here](https://donkuri.github.io/learn-japanese/setup/#adding-dictionaries).
 
 ### Will this work with tools like JL?
 
@@ -229,29 +241,26 @@ You can replace these with any fonts you prefer, or leave them as is to use the 
 
 ### How can I change the bold color?
 
-The default bold color is gray if no pitch accent coloring is available. If you want to change that color, open the `Styling` section of any Lapis card in Anki by going to `Browse`, then select any Lapis card and click on `Cards`  (top-left of the card editor). In the `Styling` section, look for the part labeled `/* Bold color */` and you will see this:
+These are the default bold colors if no pitch accent coloring is available. If you want to change that color, open the `Styling` section of any Lapis card in Anki by going to `Browse`, then select any Lapis card and click on `Cards`  (top-left of the card editor). In the `Styling` section, look for the part labeled `/* Bold color */` and you will see this:
 ```css
 /* Bold color */
---light-mode-bold: #999999;
---dark-mode-bold: #7d8590;
+--light-mode-bold: #4660f1;
+--dark-mode-bold: #fffd9e;
 ```
 Change the hexcode to whatever color you want by inputting the hexcode corresponding to that color. You can find [hexcode selectors](https://htmlcolorcodes.com/) online if you would like a color picker to easily choose from.
 
 ### How can I move the sentence on mobile?
 
-If you want to move a sentence above or below the definition on mobile, follow these steps:
+You can control where the sentence is shown on both desktop and mobile by modifying the corresponding [lines](docs/user_settings.md#sentence-position) in the CSS styling.
+Set [--mobile-sentence-position](docs/user_settings.md#sentence-position) to `"above"` to get a layout similar to the desktop one.
 
-1. Open the `Cards...` section of the card in Anki by going to `Browse` and selecting a Lapis card.
-2. In the `Cards...` editor, click on the `Back Template`.
-3. Look for the block of code like this:
+### How can I change the blur effect?
 
-   ![First Block](assets/firstBlock.png)
+Set [--nsfw-blur-contained](docs/user_settings.md#sentence-position) to `"on"` to contain the blur effect to the image box
 
-4. To move the sentence above the definition, move this block of code above the definition.
+### Why is the blur feature not working?
 
-   ![Second Block](assets/secondBlock.png)
-
-However, if you want to move the sentence from above to below the definition, reverse this process.
+Most likely it is because you are not using the right tag. Make sure your cards are tagged with `NSFW`, `nsfw`, or `Nsfw`.
 
 ### I found a bug, where can I report it?
 
@@ -265,9 +274,11 @@ You can ask us a question by opening an issue on the [issue tracker](https://git
 
 This project could never have happened without the following people:
 
-[Ruri](https://github.com/bewizible) - technical mastermind behind the project, wrote the code and built the card
+[Ruri](https://github.com/bewizible) - technical mastermind behind the project, wrote the initial code and built the card
 
 [kuri](https://github.com/donkuri) - card design, feedback and helped lead the project
+
+[itokatsu](https://github.com/itokatsu/) - contributed a lot of fixes and expanded on the initial code
 
 [Rudnam](https://github.com/rudnam) - major inspiration for the project, allowed us to reuse their code, fruitful conversations
 
