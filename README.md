@@ -1,6 +1,6 @@
 # Lapis-Modified
 
-Fork of Lapis intended for modifications that align it with my personal preferences and the original, thoughtfully designed Animecards. The idea is to split the card's information into two categories:
+Fork of a Fork of Lapis intended for modifications that align it with **_MY_** personal preferences and the original, thoughtfully designed Animecards. The idea is to split the card's information into two categories:
 
 - Essential: Word, Reading, Meaning
 - Non-essential: Picture, Sentence, Audio
@@ -12,6 +12,12 @@ Therefore, the following changes are made:
 - The image no longer appears next to the word and is left-shifted -> It's non-essential information and should be lower on the card.
 - The definition has been moved below the word and reading -> It's essential information and should be higher on the card.
 - Moved the audio buttons below the sentence.
+- Changed colorscheme to Catppuccin
+- Added image to the front of sentence as well as word-and-sentence cards
+- Add [waniAnki](https://damiansh.github.io/waniAnki/instructions#intro) integration
+- Add AI translator
+    - Uses free model by default
+    - Requires [OpenRouter key](https://openrouter.ai/)
 
 I will try my best to keep this fork up to date with the original Lapis and avoid breaking any features. If the maintainers of Lapis think these are good ideas, it might be worth building them into the original deck as optional settings.
 
@@ -34,35 +40,35 @@ An advanced yet lightweight [Anki](https://apps.ankiweb.net/) notetype, thoughtf
 
 - [Lapis](#lapis)
     - [Table of Contents](#table-of-contents)
-  - [Why was Lapis created?](#why-was-lapis-created)
-  - [Key features](#key-features)
-  - [How to use Lapis](#how-to-use-lapis)
-  - [How to update Lapis](#how-to-update-lapis)
-  - [Lapis themes](#lapis-themes)
-  - [FAQ](#faq)
-    - [What is all this Anki, notetype and mining stuff?](#what-is-all-this-anki-notetype-and-mining-stuff)
-    - [How do I set up sentence furigana?](#how-do-i-set-up-sentence-furigana)
-    - [How do I switch from JPMN to Lapis?](#how-do-i-switch-from-jpmn-to-lapis)
-    - [How do I use the various card types?](#how-do-i-use-the-various-card-types)
-    - [How do I see all my definitions?](#how-do-i-see-all-my-definitions)
-    - [What does `Hint` do?](#what-does-hint-do)
-    - [Why three different fields for definitions?](#why-three-different-fields-for-definitions)
-    - [Will this work with tools like JL?](#will-this-work-with-tools-like-jl)
-    - [How does tagging work in Lapis?](#how-does-tagging-work-in-lapis)
-    - [How do I add additional info to the card?](#how-do-i-add-additional-info-to-the-card)
-    - [Does Lapis support frequency sorting?](#does-lapis-support-frequency-sorting)
-    - [How can I change the font size?](#how-can-i-change-the-font-size)
-    - [How can I change the fonts used?](#how-can-i-change-the-fonts-used)
-    - [How can I change the bold color?](#how-can-i-change-the-bold-color)
-    - [How can I move the sentence on mobile?](#how-can-i-move-the-sentence-on-mobile)
-    - [How can I change the blur effect?](#how-can-i-change-the-blur-effect)
-    - [Why is the blur feature not working?](#why-is-the-blur-feature-not-working)
-    - [I found a bug, where can I report it?](#i-found-a-bug-where-can-i-report-it)
-    - [I have a question not covered in the FAQ](#i-have-a-question-not-covered-in-the-faq)
-  - [Contributors](#contributors)
-    - [Additional thanks](#additional-thanks)
-      - [kuri](#kuri)
-      - [Ruri](#ruri)
+    - [Why was Lapis created?](#why-was-lapis-created)
+    - [Key features](#key-features)
+    - [How to use Lapis](#how-to-use-lapis)
+    - [How to update Lapis](#how-to-update-lapis)
+    - [Lapis themes](#lapis-themes)
+    - [FAQ](#faq)
+        - [What is all this Anki, notetype and mining stuff?](#what-is-all-this-anki-notetype-and-mining-stuff)
+        - [How do I set up sentence furigana?](#how-do-i-set-up-sentence-furigana)
+        - [How do I switch from JPMN to Lapis?](#how-do-i-switch-from-jpmn-to-lapis)
+        - [How do I use the various card types?](#how-do-i-use-the-various-card-types)
+        - [How do I see all my definitions?](#how-do-i-see-all-my-definitions)
+        - [What does `Hint` do?](#what-does-hint-do)
+        - [Why three different fields for definitions?](#why-three-different-fields-for-definitions)
+        - [Will this work with tools like JL?](#will-this-work-with-tools-like-jl)
+        - [How does tagging work in Lapis?](#how-does-tagging-work-in-lapis)
+        - [How do I add additional info to the card?](#how-do-i-add-additional-info-to-the-card)
+        - [Does Lapis support frequency sorting?](#does-lapis-support-frequency-sorting)
+        - [How can I change the font size?](#how-can-i-change-the-font-size)
+        - [How can I change the fonts used?](#how-can-i-change-the-fonts-used)
+        - [How can I change the bold color?](#how-can-i-change-the-bold-color)
+        - [How can I move the sentence on mobile?](#how-can-i-move-the-sentence-on-mobile)
+        - [How can I change the blur effect?](#how-can-i-change-the-blur-effect)
+        - [Why is the blur feature not working?](#why-is-the-blur-feature-not-working)
+        - [I found a bug, where can I report it?](#i-found-a-bug-where-can-i-report-it)
+        - [I have a question not covered in the FAQ](#i-have-a-question-not-covered-in-the-faq)
+    - [Contributors](#contributors)
+        - [Additional thanks](#additional-thanks)
+            - [kuri](#kuri)
+            - [Ruri](#ruri)
 
 ## Why was Lapis created?
 
@@ -90,14 +96,14 @@ At the same time, another great notetype caught our eyes, [rudnam](https://githu
 To use Lapis, first download the example deck from [Releases](https://github.com/donkuri/lapis/releases). From there, you need to change your fields settings in Yomitan. Start by selecting `Lapis` as the `Model` in Yomitan's `Configure Anki Card Format`. Here is how your fields should be set up:
 
 | Field                 | Value                                                                                                                                                      |
-|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Expression            | `{expression}`                                                                                                                                             |
 | ExpressionFurigana    | `{furigana-plain}`                                                                                                                                         |
 | ExpressionReading     | `{reading}`                                                                                                                                                |
 | ExpressionAudio       | `{audio}`                                                                                                                                                  |
 | SelectionText         | `{popup-selection-text}`                                                                                                                                   |
 | MainDefinition        | Something like `{single-glossary-jmdict/jitendex}`. Find this by clicking the down arrow next to this field, and finding a dictionary in a similar format. |
-| DefinitionPicture     | Here you can include any image you'd like to use to help *illustrate* the definition or the vocabulary term.                                               |
+| DefinitionPicture     | Here you can include any image you'd like to use to help _illustrate_ the definition or the vocabulary term.                                               |
 | Sentence              | `{cloze-prefix}<b>{cloze-body}</b>{cloze-suffix}`                                                                                                          |
 | SentenceFurigana      |                                                                                                                                                            |
 | SentenceAudio         |                                                                                                                                                            |
@@ -153,7 +159,7 @@ When using audio cards, make sure to populate your sentence audio. It falls back
 
 ### How do I see all my definitions?
 
-To navigate through all of your definitions, you can click on the left and right edges of the definition box/blockquote. As demonstrated in the GIF at the start, the definitions, *provided your setup is correct*, will be organized into three distinct fields. You can learn more about this structural choice [here](#why-three-different-fields-for-definitions).
+To navigate through all of your definitions, you can click on the left and right edges of the definition box/blockquote. As demonstrated in the GIF at the start, the definitions, _provided your setup is correct_, will be organized into three distinct fields. You can learn more about this structural choice [here](#why-three-different-fields-for-definitions).
 
 ### What does `Hint` do?
 
@@ -162,9 +168,9 @@ The `Hint` field, inspired by Animecards, serves as a tool to provide additional
 Here’s a brief overview of its usage as described on the Animecards site:
 
 - **Disambiguating readings**: The `Hint` field can help clarify the correct reading when context alone isn’t enough.
-  - 武士 (ぶし - もののふ)
-  - 海風 (かいふう - うみかぜ)
-  - 悪口 (あっこう - わるくち)
+    - 武士 (ぶし - もののふ)
+    - 海風 (かいふう - うみかぜ)
+    - 悪口 (あっこう - わるくち)
 
 Tip: To differentiate between readings, you can specify **音読み** (on'yomi) and **訓読み** (kun'yomi) in the `Hint` field when necessary.
 
@@ -179,7 +185,7 @@ You can read the full explanation [here](https://animecards.site/ankicards/#the-
 This is partly inspired by JPMN and its method of organizing dictionaries. There are three main fields:
 
 - `SelectionText` – Use this when you want to highlight a specific sentence or definition from the Yomitan popup. If you don’t need to highlight anything, just leave it empty, it won’t affect the notetype.
-- `MainDefinition` – This is where you input the main dictionary you prefer. I highly recommend filling this in. If you're new to Japanese or mining on your own, it’s a good idea to start with a bilingual dictionary like [JMDict](https://github.com/yomidevs/jmdict-yomitan). Alternatively, you can use your preferred monolingual dictionaries (such as 三省堂, 大辞林, 大辞泉...) by selecting them when configuring Yomitan. Lapis also supports having *multiple* dictionaries inside the field. **Please note, the dictionaries need to be installed in Yomitan before they can be selected.**
+- `MainDefinition` – This is where you input the main dictionary you prefer. I highly recommend filling this in. If you're new to Japanese or mining on your own, it’s a good idea to start with a bilingual dictionary like [JMDict](https://github.com/yomidevs/jmdict-yomitan). Alternatively, you can use your preferred monolingual dictionaries (such as 三省堂, 大辞林, 大辞泉...) by selecting them when configuring Yomitan. Lapis also supports having _multiple_ dictionaries inside the field. **Please note, the dictionaries need to be installed in Yomitan before they can be selected.**
 - `Glossary` – This is where you place all of your dictionary definitions. We recommend having more than a single dictionary, see [here](https://donkuri.github.io/learn-japanese/setup/#adding-dictionaries).
 
 ### Will this work with tools like JL?
@@ -241,12 +247,14 @@ You can replace these with any fonts you prefer, or leave them as is to use the 
 
 ### How can I change the bold color?
 
-These are the default bold colors if no pitch accent coloring is available. If you want to change that color, open the `Styling` section of any Lapis card in Anki by going to `Browse`, then select any Lapis card and click on `Cards`  (top-left of the card editor). In the `Styling` section, look for the part labeled `/* Bold color */` and you will see this:
+These are the default bold colors if no pitch accent coloring is available. If you want to change that color, open the `Styling` section of any Lapis card in Anki by going to `Browse`, then select any Lapis card and click on `Cards` (top-left of the card editor). In the `Styling` section, look for the part labeled `/* Bold color */` and you will see this:
+
 ```css
 /* Bold color */
 --light-mode-bold: #4660f1;
 --dark-mode-bold: #fffd9e;
 ```
+
 Change the hexcode to whatever color you want by inputting the hexcode corresponding to that color. You can find [hexcode selectors](https://htmlcolorcodes.com/) online if you would like a color picker to easily choose from.
 
 ### How can I move the sentence on mobile?
