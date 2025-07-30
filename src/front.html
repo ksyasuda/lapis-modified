@@ -1,37 +1,58 @@
 <!---------- Header ------------->
 <header style="visibility: hidden"></header>
 
-<main>
-    <!--------- Vocab card ---------->
-    {{^IsSentenceCard}} {{^IsWordAndSentenceCard}} {{^IsClickCard}}
+<main lang="ja" style="width: 100%; !important;">
+  <!--------- Vocab card ---------->
+  {{^IsSentenceCard}} {{^IsWordAndSentenceCard}} {{^IsClickCard}}
+  {{^IsAudioCard}}
+  <div lang="ja" class="front-vocab">{{Expression}}</div>
+  {{/IsAudioCard}} {{/IsClickCard}} {{/IsWordAndSentenceCard}}
+  {{/IsSentenceCard}}
+
+  <!------- Sentence card --------->
+  {{#IsSentenceCard}}
+  <div lang="ja" class="front-sentence">
+    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
+    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+  </div>
+  {{/IsSentenceCard}}
+
+  <!--------- Word And Sentence card ----------->
+  {{#IsWordAndSentenceCard}}
+  <div lang="ja" class="front-vocab">{{Expression}}</div>
+  <div lang="ja" id="hint">
+    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
+    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+  </div>
+  {{/IsWordAndSentenceCard}}
+
+  <!-------- Click card ----------->
+  {{#IsClickCard}}
+  <div id="click" class="tappable">
     <div lang="ja" class="front-vocab">{{Expression}}</div>
-    {{/IsClickCard}} {{/IsWordAndSentenceCard}} {{/IsSentenceCard}}
+  </div>
+  {{/IsClickCard}}
 
-    <!------- Sentence card --------->
-    {{#IsSentenceCard}}
-    <!-- Sentence Moved (MODIFIED)-->
-    <div lang="ja" class="front-sentence">
-        {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-        {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
-    </div>
+  <!------- Sentence card --------->
+  {{#IsSentenceCard}}
+  <div lang="ja" class="front-sentence">
+    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
+    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+  </div>
+  {{/IsSentenceCard}}
 
-    <!-- This is for the sentence that you see on mobile (positioned under definition), on Desktop, the sentence goes above the definition box, and this is hidden -->
-    <div lang="ja" class="sentence-mobile">
-        {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
-        {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
-    </div>
-    <!-- Image (MODIFIED)-->
-    {{#Picture}}
-    <div class="image-container">
-        <div class="image tappable {{Tags}}">{{Picture}}</div>
-    </div>
-    {{/Picture}}
-    <br />
-    <div class="audio-buttons">{{ExpressionAudio}} {{SentenceAudio}}</div>
-    {{/IsSentenceCard}}
+  <!--------- Word And Sentence card ----------->
+  {{#IsWordAndSentenceCard}}
+  <div lang="ja" class="front-vocab">{{Expression}}</div>
+  <div lang="ja" id="hint">
+    {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
+    {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
+  </div>
+  {{/IsWordAndSentenceCard}}
 
-    <!--------- Word And Sentence card ----------->
-    {{#IsWordAndSentenceCard}}
+  <!-------- Click card ----------->
+  {{#IsClickCard}}
+  <div id="click" class="tappable">
     <div lang="ja" class="front-vocab">{{Expression}}</div>
     <div lang="ja" id="hint">
         {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
@@ -39,63 +60,56 @@
     </div>
     {{/IsWordAndSentenceCard}}
 
-    <!-------- Click card ----------->
-    {{#IsClickCard}}
-    <div id="click" class="tappable">
-        <div lang="ja" class="front-vocab">{{Expression}}</div>
+  <!-------- Audio card ----------->
+  {{#IsAudioCard}}
+  <div id="audio">
+    <div lang="ja" class="front-sentence">{{Sentence}}</div>
+    <div>
+      {{#SentenceAudio}}{{SentenceAudio}}{{/SentenceAudio}}
+      {{^SentenceAudio}}{{ExpressionAudio}}{{/SentenceAudio}}
     </div>
-    {{/IsClickCard}}
+  </div>
+  {{/IsAudioCard}}
 
-    <!-------- Audio card ----------->
-    {{#IsAudioCard}}
-    <div id="audio">
-        <div lang="ja" class="front-sentence">{{Sentence}}</div>
-        <div>
-            {{#SentenceAudio}}{{SentenceAudio}}{{/SentenceAudio}}
-            {{^SentenceAudio}}{{ExpressionAudio}}{{/SentenceAudio}}
-        </div>
-    </div>
-    {{/IsAudioCard}}
-
-    <!-- Hint -->
-    {{#Hint}}
-    <div id="hint">{{Hint}}</div>
-    {{/Hint}}
+  <!-- Hint -->
+  {{#Hint}}
+  <div id="hint">{{Hint}}</div>
+  {{/Hint}}
 </main>
 
 <script>
-    function ClickCard() {
-        const clickElement = document.getElementById('click');
+  function ClickCard() {
+    const clickElement = document.getElementById("click");
 
-        // Store original content so that we can click back to it
-        const originalContent = clickElement.innerHTML;
+    // Store original content so that we can click back to it
+    const originalContent = clickElement.innerHTML;
 
-        // This is what it is going to click to
-        const clickedContent = `
+    // This is what it is going to click to
+    const clickedContent = `
             <div lang="ja" class="front-sentence">
             {{#SentenceFurigana}} {{kanji:SentenceFurigana}} {{/SentenceFurigana}}
             {{^SentenceFurigana}} {{kanji:Sentence}} {{/SentenceFurigana}}
             </div>
         `;
 
-        function toggleContent() {
-            if (clickElement.innerHTML === originalContent) {
-                clickElement.innerHTML = clickedContent;
-            } else {
-                clickElement.innerHTML = originalContent;
-            }
-        }
-        // Implement the clicking mechanism
-        clickElement.addEventListener('click', (e) => toggleContent());
-        document.addEventListener('keydown', (e) => {
-            if ((event.key === 'c') | (event.key === 'C')) toggleContent();
-        });
+    function toggleContent() {
+      if (clickElement.innerHTML === originalContent) {
+        clickElement.innerHTML = clickedContent;
+      } else {
+        clickElement.innerHTML = originalContent;
+      }
     }
+    // Implement the clicking mechanism
+    clickElement.addEventListener("click", (e) => toggleContent());
+    document.addEventListener("keydown", (e) => {
+      if ((event.key === "c") | (event.key === "C")) toggleContent();
+    });
+  }
 
-    function HideTargetWord() {
-        const targetWords = document.querySelectorAll('#audio b');
-        targetWords.forEach((word) => (word.innerText = '[...]'));
-    }
+  function HideTargetWord() {
+    const targetWords = document.querySelectorAll("#audio b");
+    targetWords.forEach((word) => (word.innerText = "[...]"));
+  }
 
     function initialize() {
         // Check what card type it is
@@ -103,5 +117,5 @@
         if (`{{IsAudioCard}}`) HideTargetWord();
     }
 
-    initialize();
+  initialize();
 </script>

@@ -26,28 +26,12 @@
 </header>
 
 <main lang="ja">
-    <div class="template">
-
-        <!-- The first row -->
-        <div class="def-header">
-            <div class="dh-left">
-                <div class="vocab">
-                    {{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}
-                    {{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}
-                </div>
-
-                <!-- Reading + Pitch Accent -->
-                <div class="info">
-                    <div class="pitch">
-                        {{#ExpressionFurigana}}{{kana:ExpressionFurigana}}{{/ExpressionFurigana}}
-                        {{^ExpressionFurigana}}{{ExpressionReading}}{{/ExpressionFurigana}}
-                    </div>
-
-                    <!-- Pitch Accent -->
-                    {{#PitchPosition}}
-                    <span id="pitch-tags" class="tags"> {{PitchPosition}} </span>
-                    {{/PitchPosition}}
-                </div>
+    <!-- The first row (vocab box+picture) -->
+    <div class="def-header">
+        <div class="dh-left">
+            <div class="vocab">
+                {{#ExpressionFurigana}}{{furigana:ExpressionFurigana}}{{/ExpressionFurigana}}
+                {{^ExpressionFurigana}}{{Expression}}{{/ExpressionFurigana}}
             </div>
         </div>
 
@@ -78,6 +62,12 @@
                 <div id="ai-translation" data-display-name="AI Translation" class="hidden">
                   <div id="translation-result">Click to translate: {{Expression}}</div>
                 </div>
+
+                <!-- Pitch Accent -->
+                {{#PitchPosition}}
+                <span id="pitch-tags" class="tags"> {{PitchPosition}} </span>
+                {{/PitchPosition}}
+
             </div>
         </div>
 
@@ -146,33 +136,20 @@
     }
 
     function getPitchCategories() {
-        const validTypes = '(heiban|atamadaka|nakadaka|odaka|kifuku)';
-        return [...`{{PitchCategories}}`.matchAll(validTypes)].map((m) => m[0]);
+        const validTypes = "(heiban|atamadaka|nakadaka|odaka|kifuku)";
+        return [...`{{PitchCategories}}`.matchAll(validTypes)].map(m => m[0]);
     }
 
     function hasVerbOrAdjEnding() {
-        const endings = ['い', 'う', 'く', 'す', 'つ', 'ぶ', 'む', 'る'];
-        return endings.some((ending) =>
-            `{{Expression}}`.replace('</div>', '').endsWith(ending)
-        );
+        const endings = ["い", "う", "く", "す", "つ", "ぶ", "む", "る"];
+        return endings.some(ending => `{{Expression}}`.replace("</div>", "").endsWith(ending));
     }
 
     function getPitchType(pitchPosition) {
         const pitchCategories = getPitchCategories();
-        const kifukuTags = [
-            'adj-i',
-            'v1',
-            'v2',
-            'v4',
-            'v5',
-            'vs-',
-            'vz',
-            'vk',
-            'vn',
-            'vr'
-        ];
-        let canBeKifuku = pitchCategories.includes('kifuku');
-        canBeKifuku ||= kifukuTags.some((tag) => `{{PitchCategories}}`.includes(tag));
+        const kifukuTags = ["adj-i", "v1", "v2", "v4", "v5", "vs-", "vz", "vk", "vn", "vr"];
+        let canBeKifuku = pitchCategories.includes("kifuku");
+        canBeKifuku ||= kifukuTags.some(tag => `{{PitchCategories}}`.includes(tag));
         if (canBeKifuku || (pitchCategories.length == 0 && hasVerbOrAdjEnding())) {
             return pitchPosition === 0 ? "heiban" : "kifuku";
         }
@@ -187,10 +164,8 @@
     }
 
     function handlePitches() {
-        const pitchTags = document.querySelector('#pitch-tags');
-        const pitchPositions = pitchTags?.textContent
-            .match(/^\d+|\d+\b|\d+(?=\w)/g)
-            .map(Number);
+        const pitchTags = document.querySelector("#pitch-tags");
+        const pitchPositions = pitchTags?.textContent.match(/^\d+|\d+\b|\d+(?=\w)/g).map(Number);
         if (!pitchPositions) return;
 
         paintTargetWord(getPitchType(pitchPositions[0]));
@@ -218,36 +193,15 @@
     function splitTags() {
         const tagsContainer = document.querySelector(".tags-container");
         if (!tagsContainer) return;
-        const tags = `{{Tags}}`.split(' ');
-        tagsContainer.innerHTML = tags
-            .map((tag) => `<div class="tags">${tag}</div>`)
-            .join('');
+        const tags = `{{Tags}}`.split(" ");
+        tagsContainer.innerHTML = tags.map(tag => `<div class="tags">${tag}</div>`).join('');
     }
 
     function groupMoras(kana) {
         let currentChar = "";
         let nextChar = "";
         const groupedMoras = [];
-        const check = [
-            'ァ',
-            'ィ',
-            'ゥ',
-            'ェ',
-            'ォ',
-            'ャ',
-            'ュ',
-            'ョ',
-            'ヮ',
-            'ぁ',
-            'ぃ',
-            'ぅ',
-            'ぇ',
-            'ぉ',
-            'ゃ',
-            'ゅ',
-            'ょ',
-            'ゎ'
-        ];
+        const check = ["ァ", "ィ", "ゥ", "ェ", "ォ", "ャ", "ュ", "ョ", "ヮ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "ゎ"];
 
         for (let i = 0; i < kana.length; i++) {
             currentChar = kana[i];
@@ -392,8 +346,7 @@
         const isJPMNConverted = document.querySelector(".definition li[data-details]");
         if (isJPMNConverted) return false;
         // single dict formatting
-        const isSingleDict =
-            document.querySelectorAll('#glossaries > div > ol').length === 0;
+        const isSingleDict = document.querySelectorAll("#glossaries > div > ol").length === 0;
         if (isSingleDict) {
             const primaryDictName = document.querySelector("#primary > div > i");
             const glossariesDictName = document.querySelector("#glossaries > div > i");
@@ -404,16 +357,14 @@
             // Compare content otherwise
             const primaryDict = getDictionaryContent("#primary > div");
             const glossariesDict = getDictionaryContent("#glossaries > div");
-            if (!primaryDict || !glossariesDict ) return false;
+            if (!primaryDict || !glossariesDict) return false;
             return primaryDict.innerHTML.trim() === glossariesDict.innerHTML.trim();
         }
 
         // multiple dicts
-        const primaryDicts = document.querySelectorAll('#primary li[data-dictionary]');
-        const glossariesDicts = document.querySelectorAll(
-            '#glossaries li[data-dictionary]'
-        );
-        return primaryDicts.length === glossariesDicts.length;
+        const primaryDicts = document.querySelectorAll("#primary li[data-dictionary]");
+        const glossariesDicts = document.querySelectorAll("#glossaries li[data-dictionary]");
+        return primaryDicts.length === glossariesDicts.length
     }
 
     // Removes Unnecessary definitions
@@ -438,13 +389,15 @@
 
     // Display definition corresponding to index
     function updateDefDisplay() {
-        const definitions = document.querySelectorAll('.main-def > .definition > div');
-        const indexDisplay = document.querySelector(".def-info");
+        const definitions = document.querySelectorAll(
+            ".main-def > .definition > div"
+        );
 
         let n_defs = definitions.length;
-        if (n_defs === 0) return;
+        if (n_defs === 1) definitions[0].classList.remove("hidden");
+        if (n_defs <= 1) return;
 
-        let currentIndex = Number(document.head.dataset.defIndex) || 0;
+        let currentIndex = document.head.dataset.defIndex;
         currentIndex = currentIndex % n_defs;
         while (currentIndex < 0) currentIndex += n_defs;
 
@@ -454,10 +407,9 @@
         definitions[currentIndex].classList.remove('hidden');
 
         const defDisplayName = definitions[currentIndex].dataset.displayName;
-        if (indexDisplay) {
-            indexDisplay.style.opacity = 1;
-            indexDisplay.innerText = `${defDisplayName} ${currentIndex + 1}/${n_defs}`;
-        }
+        const indexDisplay = document.querySelector(".def-info");
+        indexDisplay.style.visibility = "visible";
+        indexDisplay.innerText = `${defDisplayName} ${currentIndex + 1}/${n_defs}`;
     }
 
     function changeIndex(value) {
@@ -465,7 +417,14 @@
         index = Number(document.head.dataset.defIndex);
         document.head.dataset.defIndex = index + value;
         updateDefDisplay();
-    }
+    };
+
+    function changeIndex(value) {
+        // sync index between clicks and arrowkeys
+        index = Number(document.head.dataset.defIndex);
+        document.head.dataset.defIndex = index + value;
+        updateDefDisplay();
+    };
 
     function setUpDefToggle() {
         document.head.dataset.defIndex = 0;
@@ -501,11 +460,9 @@
 
     // Image lightbox with fade transition similar to JPMN
     function clickImages() {
-        const modalBg = document.querySelector('.modal-bg');
-        const imgPopup = document.querySelector('.img-popup');
-        const images = Array.from(
-            document.querySelectorAll('.image img, .def-image img')
-        );
+        const modalBg = document.querySelector(".modal-bg");
+        const imgPopup = document.querySelector(".img-popup");
+        const images = Array.from(document.querySelectorAll(".image img, .def-image img"));
 
         if (images.length < 1) return;
 
@@ -523,7 +480,7 @@
                     imgPopupContainer.style.width = "max-content";
                 }
 
-                imgPopup.innerHTML = '';
+                imgPopup.innerHTML = "";
                 imgPopup.appendChild(imgPopupContainer);
                 imgPopupContainer.appendChild(imgPopupImg);
 
@@ -531,35 +488,33 @@
                 void modalBg.offsetWidth;
 
                 // Show the modal background with fade transition
-                modalBg.style.display = 'block';
+                modalBg.style.display = "block";
 
                 // Force another reflow to ensure the display change takes effect before transition
                 void modalBg.offsetWidth;
 
-                modalBg.classList.add('active');
-                imgPopupContainer.classList.add('active');
-                document.body.classList.add('img-popup');
+                modalBg.classList.add("active");
+                imgPopupContainer.classList.add("active");
+                document.body.classList.add("img-popup");
             });
         }
 
         modalBg.addEventListener('click', () => {
             // Removes active classes to trigger fade-out transition
-            modalBg.classList.remove('active');
-            const activeContainer = document.querySelector(
-                '.img-popup-container.active'
-            );
+            modalBg.classList.remove("active");
+            const activeContainer = document.querySelector(".img-popup-container.active");
             if (activeContainer) {
                 activeContainer.classList.remove('active');
             }
             setTimeout(() => {
-                document.body.classList.remove('img-popup');
-                modalBg.style.display = 'none';
-                imgPopup.innerHTML = '';
+                document.body.classList.remove("img-popup");
+                modalBg.style.display = "none";
+                imgPopup.innerHTML = "";
             }, 300);
         });
     }
 
-    // Format plaintext frequencies into a list
+    // Format plaintext comma-separated frequencies into a list
     function formatFrequencyList() {
         const frequency = document.querySelector('.freq-list-container');
         if (!frequency) return;
@@ -597,20 +552,18 @@
         style.type = 'text/css';
         style.id = "hide-main-def";
 
-        const cssSelector = Array.from(primaryDicts)
-            .map(
-                (dict) => `#glossaries li[data-dictionary="${dict.dataset.dictionary}"]`
-            )
-            .join(', ');
+        const cssSelector = Array.from(primaryDicts).map((dict) =>
+            `#glossaries li[data-dictionary="${dict.dataset.dictionary}"]`
+        ).join(", ");
         const cssRules = `${cssSelector} { display:none !important; }`;
         style.appendChild(document.createTextNode(cssRules));
 
-        let defContainer = document.querySelector("blockquote.main-def");
+        let defContainer = document.querySelector(".main-def");
         defContainer.appendChild(style);
     }
 
-    // Moves Primary Dicts into the same list
-    function movePrimaryDicts() {
+    // Fixes list numbering when using multiple primary dicts
+   function movePrimaryDicts() {
         let primaryDicts = document.querySelectorAll('#primary li[data-dictionary]');
         let firstList = document.querySelector(
             '#primary .yomitan-glossary > ol:has( li[data-dictionary])'
@@ -618,6 +571,34 @@
         for (let idx = 1; idx < primaryDicts.length; idx++) {
             firstList.appendChild(primaryDicts[idx]);
         }
+    }
+
+    function userSettings() {
+        const oldSettings = document.querySelector("body > settings");
+        // Needed to give user instant feedback on their changes
+        oldSettings?.remove();
+
+        const settings = document.createElement("settings");
+        const options = [
+            "--main-picture-position",
+            "--sentence-furigana",
+            "--sentence-position",
+            "--mobile-sentence-position",
+            "--mobile-audio-buttons",
+            "--nsfw-blur-contained",
+            "--open-misc-info",
+            "--glossary-separator",
+            "--jitendex-format"
+        ];
+        for (let opt of options) {
+            const value = getComputedStyle(document.documentElement).getPropertyValue(opt).trim();
+            settings.setAttribute("data-" + opt.slice(2), value.slice(1, -1));
+            if (opt === "--open-misc-info" && value === "\"on\"") {
+                const miscInfo = document.querySelector("details:has(.misc-info)")
+                if (miscInfo) miscInfo.open = true;
+            }
+        }
+        document.body.insertBefore(settings, document.getElementById("qa"));
     }
 
     // Initialize all functions!!!
@@ -630,6 +611,7 @@
         setDHHeight();
         hideCorrectDefinition();
         movePrimaryDicts();
+        userSettings();
     }
 
     initialize();

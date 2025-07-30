@@ -1095,7 +1095,9 @@ li[data-dictionary='旺文社 全訳古語辞典'] div[data-sc小倉囲み-g] {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .translation-error {
