@@ -13,7 +13,7 @@ Therefore, the following changes are made:
 - The definition has been moved below the word and reading -> It's essential information and should be higher on the card.
 - Moved the audio buttons below the sentence.
 - Changed colorscheme to Catppuccin
-- Added image to the front of sentence as well as word-and-sentence cards
+- Added image to the front of sentence cards
 - Add [waniAnki](https://damiansh.github.io/waniAnki/instructions#intro) integration
 - Add AI translator
     - Uses free model by default
