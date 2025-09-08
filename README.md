@@ -21,7 +21,7 @@ Therefore, the following changes are made:
 
 I will try my best to keep this fork up to date with the original Lapis and avoid breaking any features. If the maintainers of Lapis think these are good ideas, it might be worth building them into the original deck as optional settings.
 
-![Lapis Modified](assets/lapis_modified.png)
+![Lapis Modified](assets/lapis_modified2.png)
 
 ---
 
