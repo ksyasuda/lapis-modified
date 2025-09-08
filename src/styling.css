@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 :root {
     /* Color theme */
     --light-mode-bg-color: #2a2d3a;
@@ -23,7 +27,7 @@
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --elevated-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    
+
     /* Border radius */
     --border-radius-sm: 6px;
     --border-radius-md: 8px;
@@ -52,10 +56,10 @@
 
     /* Miscellaneous */
     --font-serif:
-        'Noto Serif CJK JP', 'Georgia', 'Liberation Serif', 'Times New Roman',
+        'Noto Serif CJK JP', 'Droid Serif', 'Georgia', 'Liberation Serif', 'Times New Roman',
         'Hiragino Mincho ProN', 'Yu Mincho', HanaMinA, HanaMinB, serif;
     --font-sans:
-        'Noto Sans CJK JP', 'SF Pro Display', 'Liberation Sans', 'Segoe UI',
+        'Noto Sans CJK JP', 'Droid Sans', 'Open Sans', 'SF Pro Display', 'Liberation Sans', 'Segoe UI',
         'Hiragino Kaku Gothic ProN', 'Meiryo', HanaMinA, HanaMinB, sans-serif;
     --light-mode-image-brightness: 90%;
     --dark-mode-image-brightness: 85%;
@@ -63,7 +67,7 @@
     --dark-mode-tooltip-hover-color: rgba(30, 41, 59, 0.95);
     --def-picture-size: 200px;
     --max-width: 800px;
-    
+
     /* Enhanced spacing system */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
@@ -71,7 +75,7 @@
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
     --spacing-2xl: 3rem;
-    
+
     /* Transition timings */
     --transition-fast: 0.15s ease-out;
     --transition-normal: 0.25s ease-out;
@@ -80,14 +84,30 @@
     font-size: var(--main-font-size);
 }
 
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    box-sizing: border-box;
+}
+
+
 .card {
     background-color: var(--bg-color) !important;
     color: var(--fg-color) !important;
     box-shadow: var(--card-shadow);
     border-radius: var(--border-radius-lg);
-    overflow: visible;
-    height: 100vh;
+    overflow-x: hidden;
     overflow-y: auto;
+    height: 100vh;
+    max-width: 100vw;
+    box-sizing: border-box;
+    -ms-overflow-style: none;
+    scrollbar-width: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.card::-webkit-scrollbar {
+    display: none;
 }
 
 .card.nightMode {
@@ -252,7 +272,7 @@ html.mobile {
     padding-bottom: var(--spacing-xl);
 }
 
-/* ------- Mobile css ------- */
+/* Mobile styles */
 @media (max-width: 512px) {
     .images-container {
         justify-content: space-around;
@@ -278,47 +298,47 @@ html.mobile {
         object-fit: contain;
         border-radius: var(--border-radius-lg);
     }
-    
+
     /* Enhanced mobile typography */
     .front-vocab {
         font-size: var(--mobile-vocab-font-size);
         line-height: 1.2;
         margin-bottom: var(--spacing-md);
     }
-    
+
     .front-sentence {
         font-size: var(--mobile-sentence-font-size);
         line-height: 1.3;
         margin-bottom: var(--spacing-md);
     }
-    
+
     .vocab {
         font-size: var(--mobile-back-vocab-font-size);
         line-height: 1.2;
     }
-    
+
     .sentence,
     .sentence-mobile {
         font-size: var(--mobile-back-sentence-font-size);
         line-height: 1.3;
         padding: var(--spacing-sm);
     }
-    
+
     .main-def {
         padding: var(--spacing-md);
         margin: var(--spacing-sm) auto;
         font-size: var(--mobile-main-def-size);
     }
-    
+
     .def-header {
         padding: var(--spacing-md);
         margin-bottom: var(--spacing-md);
     }
-    
+
     .dh-left {
         padding: var(--spacing-md);
     }
-    
+
     /* Better mobile touch targets */
     .tags {
         padding: var(--spacing-sm) var(--spacing-md);
@@ -327,16 +347,26 @@ html.mobile {
         display: flex;
         align-items: center;
     }
-    
+
     .replay-button {
         padding: var(--spacing-md);
         min-height: 48px;
         min-width: 48px;
     }
-    
+
     .replay-button svg {
         width: 24px;
         height: 24px;
+    }
+
+    /* Enhanced mobile interactions */
+    .tappable {
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .tappable:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
     }
 }
 
@@ -350,22 +380,22 @@ html.mobile {
         object-fit: contain;
         border-radius: var(--border-radius-lg);
     }
-    
+
     /* Tablet-specific improvements */
     .front-vocab {
         font-size: calc(var(--pc-vocab-font-size) * 0.9);
     }
-    
+
     .front-sentence {
         font-size: calc(var(--pc-sentence-font-size) * 0.9);
     }
-    
+
     .main-def {
         padding: var(--spacing-lg);
     }
 }
 
-/* ----- Front elements ----- */
+/* Front elements */
 
 .front-vocab {
     font-size: var(--vocab-font-size);
@@ -408,7 +438,7 @@ html.mobile {
     cursor: pointer;
 }
 
-/* ----- Back elements ----- */
+/* Back elements */
 
 /* Vocab on the back (for mobile) */
 .vocab {
@@ -437,8 +467,6 @@ header {
     font-size: 0.9rem;
     font-weight: 500;
     padding: var(--spacing-sm) 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .top-container {
@@ -485,6 +513,9 @@ header {
 main {
     width: min(var(--max-width), calc(100% - 20px));
     margin-inline: auto;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 /* Info (audio, reading) */
@@ -589,10 +620,13 @@ main {
     border-left: 4px solid var(--fg-subtle);
     padding: var(--spacing-lg);
     margin: var(--spacing-md) auto;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
     position: relative;
     border-radius: var(--border-radius-md);
     box-shadow: var(--elevated-shadow);
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Definition info display */
@@ -620,6 +654,9 @@ main {
     text-align: left;
     width: fit-content;
     max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
 /* Definition toggle css */
@@ -668,22 +705,6 @@ main {
     filter: brightness(var(--image-brightness));
 }
 
-/* ------- Mobile css ------- */
-@media (max-width: 512px) {
-    .image-container {
-        justify-content: space-around;
-        flex-direction: row !important;
-        max-width: 420px !important;
-        width: 100%;
-        flex-wrap: wrap;
-        gap: var(--spacing-sm);
-    }
-
-    .image-container img {
-        width: 88%;
-        border-radius: var(--border-radius-md);
-    }
-}
 
 /* Definition Image(s) */
 .def-image {
@@ -724,8 +745,8 @@ main {
     visibility: hidden;
     backdrop-filter: blur(4px);
     transition:
-        opacity var(--transition-slow) ease,
-        visibility var(--transition-slow) ease;
+        opacity var(--transition-fast) ease,
+        visibility var(--transition-fast) ease;
 }
 
 .modal-bg.active {
@@ -747,9 +768,9 @@ main {
     border-radius: var(--border-radius-lg);
     box-shadow: var(--elevated-shadow);
     transition:
-        opacity var(--transition-slow) ease,
-        visibility var(--transition-slow) ease,
-        transform var(--transition-slow) ease;
+        opacity var(--transition-fast) ease,
+        visibility var(--transition-fast) ease,
+        transform var(--transition-fast) ease;
 }
 
 .img-popup-container.active {
@@ -871,7 +892,6 @@ footer {
     position: relative;
     gap: min(20px, 2vw);
     padding: var(--spacing-lg);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
     border-radius: var(--border-radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: var(--card-shadow);
@@ -912,22 +932,6 @@ footer {
     max-width: 40vw;
 }
 
-/* Enhanced mobile interactions */
-@media (max-width: 512px) {
-    .tappable {
-        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-    }
-    
-    .tappable:active {
-        transform: scale(0.95);
-        transition: transform 0.1s ease;
-    }
-    
-    /* Better mobile scrolling */
-    .card {
-        -webkit-overflow-scrolling: touch;
-    }
-}
 
 /* Misc. info */
 .misc-info {
@@ -944,7 +948,7 @@ footer {
     margin: 0;
 }
 
-/* ----- Misc ----- */
+/* Misc */
 
 /* Furigana */
 ruby rt {
@@ -961,16 +965,6 @@ b {
     font-weight: 400;
 }
 
-/* Hide scrollbar */
-.card {
-    -ms-overflow-style: none;
-    scrollbar-width: 0;
-    -webkit-overflow-scrolling: touch;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-}
 
 /* Enhanced focus states for accessibility */
 .tappable:focus,
@@ -1133,6 +1127,15 @@ li[data-dictionary^='JMdict'] i {
 
 .definition a span {
     max-width: 300px !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Prevent long URLs and text from causing horizontal overflow */
+a {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 .definition .hidden {
@@ -1271,7 +1274,7 @@ ol
 }
 
 .tappable:active {
-    transform: scale(0.98);
+    transform: scale(0.95);
     transition: transform 0.1s ease;
 }
 
@@ -1287,11 +1290,11 @@ ol
     .card {
         border: 2px solid var(--fg-color);
     }
-    
+
     .main-def {
         border-left-width: 6px;
     }
-    
+
     .tags {
         border: 1px solid var(--fg-color);
     }
@@ -1379,6 +1382,10 @@ li[data-dictionary='旺文社 全訳古語辞典'] div[data-sc小倉囲み-g] {
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: var(--card-shadow);
     margin: var(--spacing-md) 0;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 #translation-result .error {
@@ -1438,4 +1445,16 @@ li[data-dictionary='旺文社 全訳古語辞典'] div[data-sc小倉囲み-g] {
     font-size: 0.85em;
     font-style: italic;
     opacity: 0.8;
+}
+
+/* AI Translation Section Container */
+#ai-translation {
+    max-width: 100%;
+    overflow: visible;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+#ai-translation.hidden {
+    display: none;
 }

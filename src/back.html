@@ -551,7 +551,7 @@
                 document.body.classList.remove('img-popup');
                 modalBg.style.display = 'none';
                 imgPopup.innerHTML = '';
-            }, 300);
+            }, 50);
         });
     }
 
@@ -645,112 +645,269 @@
 
 <!-- AI Translation Script -->
 <script>
-    async function getAITranslation() {
-        const translationResult = document.getElementById('translation-result');
-        // Always get the current card's expression
-        const inputText = document.querySelector('.vocab').textContent.trim();
+const TranslationConfig = {
+    apiKey: 'YOUR_OPENROUTER_API_KEY',
+    apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+    model: 'google/gemini-2.0-flash-exp:free',
+    timeout: 30000, // 30 seconds
+    maxRetries: 3,
+    retryDelay: 1000 // 1 second
+};
 
-        // Show we're working on it
-        translationResult.innerHTML = `
-            <div class="translation-loading">
-                Translating: ${inputText}...
-                <div class="loading-spinner"></div>
-            </div>`;
+const TranslationState = {
+    isTranslating: false,
+    retryCount: 0,
+    lastInput: null
+};
 
-        try {
-            const response = await fetch(
-                'https://openrouter.ai/api/v1/chat/completions',
+// Utility functions
+function showError(message, inputText, showRetry = true) {
+    const translationResult = document.getElementById('translation-result');
+    const retryButton = showRetry ? '<div class="retry-hint">Click to retry</div>' : '';
+    translationResult.innerHTML = `
+        <div class="translation-error">
+            <div class="error-message">${message}</div>
+            ${retryButton}
+        </div>`;
+}
+
+function showLoading(inputText) {
+    const translationResult = document.getElementById('translation-result');
+    translationResult.innerHTML = `
+        <div class="translation-loading">
+            <div class="loading-spinner"></div>
+            <div>Translating: ${inputText}...</div>
+        </div>`;
+}
+
+function validateApiKey() {
+    return TranslationConfig.apiKey &&
+           TranslationConfig.apiKey !== 'YOUR_OPENROUTER_API_KEY' &&
+           TranslationConfig.apiKey.trim().length > 0;
+}
+
+function validateInput(inputText) {
+    if (!inputText || inputText.trim().length === 0) {
+        throw new Error('No text to translate');
+    }
+    if (inputText.length > 1000) {
+        throw new Error('Text too long (max 1000 characters)');
+    }
+    return inputText.trim();
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function createAbortController() {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), TranslationConfig.timeout);
+    return controller;
+}
+
+function formatTranslation(translation) {
+    if (!translation || translation.trim() === '') {
+        throw new Error('Empty translation received from API');
+    }
+
+    return translation
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function getErrorMessage(error) {
+    if (error.name === 'AbortError') {
+        return 'Translation timed out. Please try again.';
+    }
+    if (error.message.includes('Failed to fetch')) {
+        return 'Network error. Please check your internet connection.';
+    }
+    if (error.message.includes('401')) {
+        return 'Invalid API key. Please check your OpenRouter API key.';
+    }
+    if (error.message.includes('429')) {
+        return 'Rate limit exceeded. Please wait a moment before trying again.';
+    }
+    if (error.message.includes('500')) {
+        return 'Server error. Please try again later.';
+    }
+    return error.message || 'An unexpected error occurred.';
+}
+
+async function makeApiRequest(inputText) {
+    const controller = createAbortController();
+
+    const response = await fetch(TranslationConfig.apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${TranslationConfig.apiKey}`,
+            'HTTP-Referer': 'https://github.com/ksyasuda/lapis-modified',
+            'X-Title': 'Lapis Modified'
+        },
+        body: JSON.stringify({
+            model: TranslationConfig.model,
+            messages: [
                 {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: 'Bearer YOUR_OPENROUTER_API_KEY',
-                        'HTTP-Referer': 'https://github.com/ksyasuda/lapis-modified',
-                        'X-Title': 'Lapis Modified'
-                    },
-                    body: JSON.stringify({
-                        model: 'google/gemini-2.0-flash-exp:free',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `
-You are a Japanese language expert. Your sole purpose is to translate and annotate Japanese text for Anki cards. Follow these rules exactly:
+                    role: 'system',
+                    content: `You are a Japanese language expert. Your sole purpose is to translate and annotate Japanese text for Anki cards. Follow these rules exactly:
 
 1. Input will be a single Japanese sentence or phrase. Do not ask for clarification.
 2. Output in Markdown, using these sections and headings:
 
-   ## 原文  
+   ## 原文
    (The original Japanese text, verbatim.)
 
-   ## 英訳  
+   ## 英訳
    (A concise, natural English translation.)
 
-   ## 単語別訳 (Word‑by‑Word Breakdown)  
+   ## 単語別訳 (Word‑by‑Word Breakdown)
    For each significant word or phrase, show:
-   - Japanese (with **furigana** for any kanji)  
-   - Part of speech in brackets  
-   - English gloss  
+   - Japanese (with **furigana** for any kanji)
+   - Part of speech in brackets
+   - English gloss
 
-   Example:  
+   Example:
    \`\`\`markdown
-   - **学生**（がくせい）[noun] – student  
-   - **勉強する**（べんきょうする）[verb] – to study  
-`
-                            },
-                            {
-                                role: 'user',
-                                content: inputText
-                            }
-                        ]
-                    })
+   - **学生**（がくせい）[noun] – student
+   - **勉強する**（べんきょうする）[verb] – to study
+\``
+                },
+                {
+                    role: 'user',
+                    content: inputText
                 }
-            );
+            ],
+            temperature: 0.3,
+            max_tokens: 1000
+        }),
+        signal: controller.signal
+    });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+        throw new Error('Invalid response format from API');
+    }
+
+    return data.choices[0].message.content;
+}
+
+async function translateWithRetry(inputText) {
+    let lastError;
+
+    for (let attempt = 1; attempt <= TranslationConfig.maxRetries; attempt++) {
+        try {
+            TranslationState.retryCount = attempt - 1;
+
+            if (attempt > 1) {
+                showLoading(`${inputText} (attempt ${attempt}/${TranslationConfig.maxRetries})`);
+                await sleep(TranslationConfig.retryDelay * attempt);
             }
 
-            const data = await response.json();
-            const translation = data.choices[0].message.content;
+            const translation = await makeApiRequest(inputText);
+            const formattedTranslation = formatTranslation(translation);
 
-            if (!translation || translation.trim() === '') {
-                throw new Error('Empty translation received');
-            }
-
-            // Convert markdown to HTML and preserve line breaks
-            const formattedTranslation = translation
-                .replace(/\n/g, '<br>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>');
-
+            const translationResult = document.getElementById('translation-result');
             translationResult.innerHTML = formattedTranslation;
+
+            // Reset state on success
+            TranslationState.isTranslating = false;
+            TranslationState.retryCount = 0;
+            return;
+
         } catch (error) {
-            translationResult.innerHTML = `
-                <div class="translation-error">
-                    <div class="error-message">Error translating "${inputText}": ${error.message}</div>
-                    <div class="retry-hint">Click to retry</div>
-                </div>`;
+            lastError = error;
+            console.warn(`Translation attempt ${attempt} failed:`, error);
+
+            if (attempt === TranslationConfig.maxRetries) {
+                break;
+            }
         }
     }
 
-    // Add handlers for both click and touch events
-    document.addEventListener('click', function (e) {
-        // Check if the clicked element is the AI Translation tab
+    throw lastError;
+}
+
+async function getAITranslation() {
+    // Prevent multiple simultaneous translations
+    if (TranslationState.isTranslating) {
+        console.log('Translation already in progress');
+        return;
+    }
+
+    const translationResult = document.getElementById('translation-result');
+    if (!translationResult) {
+        console.error('Translation result element not found');
+        return;
+    }
+
+    // Validate API key
+    if (!validateApiKey()) {
+        showError('OpenRouter API key is not configured. Please set your API key in the script.', '', false);
+        return;
+    }
+
+    // Get and validate input text
+    let inputText;
+    try {
+        const vocabElement = document.querySelector('.vocab');
+        if (!vocabElement) {
+            throw new Error('Could not find vocabulary element');
+        }
+        inputText = validateInput(vocabElement.textContent);
+    } catch (error) {
+        showError(`Input error: ${error.message}`, '', false);
+        return;
+    }
+
+    // Check if we're retrying the same input
+    if (TranslationState.lastInput === inputText && TranslationState.retryCount > 0) {
+        console.log('Retrying same input');
+    } else {
+        TranslationState.lastInput = inputText;
+        TranslationState.retryCount = 0;
+    }
+
+    TranslationState.isTranslating = true;
+    showLoading(inputText);
+
+    try {
+        await translateWithRetry(inputText);
+    } catch (error) {
+        console.error('Translation failed:', error);
+        const errorMessage = getErrorMessage(error);
+        showError(`Translation failed: ${errorMessage}`, inputText, true);
+        TranslationState.isTranslating = false;
+    }
+}
+
+// Add event listeners for AI Translation
+document.addEventListener('click', function (e) {
+    // Check if the clicked element is the AI Translation tab
+    if (e.target.closest('#ai-translation')) {
+        getAITranslation();
+    }
+});
+
+// Add touch handler for mobile devices
+document.addEventListener(
+    'touchend',
+    function (e) {
+        // Check if the touched element is the AI Translation tab
         if (e.target.closest('#ai-translation')) {
+            e.preventDefault(); // Prevent any default touch behavior
             getAITranslation();
         }
-    });
-
-    // Add touch handler for mobile devices
-    document.addEventListener(
-        'touchend',
-        function (e) {
-            // Check if the touched element is the AI Translation tab
-            if (e.target.closest('#ai-translation')) {
-                e.preventDefault(); // Prevent any default touch behavior
-                getAITranslation();
-            }
-        },
-        { passive: false }
-    );
+    },
+    { passive: false }
+);
 </script>
